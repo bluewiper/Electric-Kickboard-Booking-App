@@ -13,6 +13,8 @@
 		2324D6002C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */; };
 		2324D6022C4E8B4700F3D47B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2324D6012C4E8B4700F3D47B /* Assets.xcassets */; };
 		2324D6052C4E8B4700F3D47B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 2324D6042C4E8B4700F3D47B /* Base */; };
+		2382533D2C4F760A0037F0E6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2382533C2C4F760A0037F0E6 /* Alamofire */; };
+		238253402C4F76150037F0E6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2382533F2C4F76150037F0E6 /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +33,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2382533D2C4F760A0037F0E6 /* Alamofire in Frameworks */,
+				238253402C4F76150037F0E6 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +87,10 @@
 			dependencies = (
 			);
 			name = kickboardBookingAppProject;
+			packageProductDependencies = (
+				2382533C2C4F760A0037F0E6 /* Alamofire */,
+				2382533F2C4F76150037F0E6 /* SnapKit */,
+			);
 			productName = kickboardBookingAppProject;
 			productReference = 2324D5F52C4E8B4600F3D47B /* kickboardBookingAppProject.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +119,10 @@
 				Base,
 			);
 			mainGroup = 2324D5EC2C4E8B4600F3D47B;
+			packageReferences = (
+				2382533B2C4F760A0037F0E6 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				2382533E2C4F76150037F0E6 /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			productRefGroup = 2324D5F62C4E8B4600F3D47B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -353,6 +365,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2382533B2C4F760A0037F0E6 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.9.1;
+			};
+		};
+		2382533E2C4F76150037F0E6 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2382533C2C4F760A0037F0E6 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2382533B2C4F760A0037F0E6 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		2382533F2C4F76150037F0E6 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2382533E2C4F76150037F0E6 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */ = {
