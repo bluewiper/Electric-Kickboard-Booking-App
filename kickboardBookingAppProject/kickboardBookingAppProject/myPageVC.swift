@@ -28,12 +28,20 @@ struct UserInfo {
     }
 }
 
+// 테이블 뷰 메뉴아이템 데이터
+enum MenuItem: String, CaseIterable {
+    case history = "이용 내역"
+    case updateProfile = "회원정보 변경"
+    case updateLicense = "운전면허증(업데이트 예정)"
+    case logout = "로그아웃"
+}
+
 // D. 더미 데이터
 var user = UserInfo(userID: "johnDoe123", password: "securePassword", nickname: "John", kickboardCode: "KFSE123", isUsingScooter: true)
 
 class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    // UI 요소 정의 : greetingLabel
+    // D. UI 요소 정의 : greetingLabel
     let greetingLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
@@ -45,7 +53,7 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - UI 요소: 이용 상태 안내 박스
     
-    // UI 요소 선언
+    // D. UI 요소 선언
     let containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -99,6 +107,8 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         return button
     }()
     
+    // MARK: - UI 요소: 테이블 뷰 및 메뉴아이템
+    
     let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -106,13 +116,16 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }()
     
     // 테이블 뷰 메뉴 아이템
-    let menuItems = ["이용 내역", "회원정보 변경", "운전면허증(업데이트 예정)", "로그아웃"]
+      let menuItems: [MenuItem] = MenuItem.allCases
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
         view.backgroundColor = .white
+        
+        // D. 네비게이션 타이틀 설정
+        title = "마이페이지"
         
         // D. 뷰 생성
         view.addSubview(greetingLabel)
@@ -131,15 +144,16 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         setUpTableView()
     }
     
+    // D. 마이페이지의 첫 번째 페이지 제약 조건
     func setUpLayout() {
         
-        // 레이블 제약조건(닉네임을 포함한 환영인사 라벨)
+        // D. 레이블 제약조건(닉네임을 포함한 환영인사 라벨)
         greetingLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(120)
             $0.leading.equalToSuperview().offset(24)
         }
         
-        // 컨테이너 뷰 제약조건
+        // D. 컨테이너 뷰 제약조건
         containerView.snp.makeConstraints {
             $0.top.equalTo(greetingLabel.snp.bottom).offset(30)
             $0.leading.equalToSuperview().offset(24)
@@ -147,31 +161,31 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             $0.height.equalTo(150)
         }
         
-        // 컨테이너 뷰에 포함된 상태 레이블 제약 조건
+        // D. 컨테이너 뷰에 포함된 상태 레이블 제약 조건
         statusLabel.snp.makeConstraints {
             $0.top.equalTo(containerView.snp.top).offset(16)
             $0.leading.equalTo(containerView.snp.leading).offset(16)
         }
         
-        // 이용 시간 타이틀 레이블 제약 조건
+        // D. 이용 시간 타이틀 레이블 제약 조건
         timeTitleLabel.snp.makeConstraints {
             $0.top.equalTo(statusLabel.snp.bottom).offset(10)
             $0.trailing.equalTo(containerView.snp.trailing).offset(-16)
         }
         
-        // 이용 시간 레이블 제약 조건
+        // D. 이용 시간 레이블 제약 조건
         timeLabel.snp.makeConstraints {
             $0.top.equalTo(timeTitleLabel.snp.bottom).offset(10)
             $0.trailing.equalTo(containerView.snp.trailing).offset(-16)
         }
         
-        // 중앙 라벨 제약 조건
+        // D. 중앙 라벨 제약 조건
         centerLabel.snp.makeConstraints {
             $0.top.equalTo(containerView).offset(50)
             $0.centerX.equalTo(containerView)
         }
         
-        // 반납 버튼 레이블 제약 조건
+        // D. 반납 버튼 레이블 제약 조건
         returnButton.snp.makeConstraints {
             $0.leading.equalTo(containerView.snp.leading)
             $0.trailing.equalTo(containerView.snp.trailing)
@@ -179,7 +193,7 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             $0.height.equalTo(50)
         }
         
-        // 테이블 뷰 레이블 제약 조건
+        // D. 테이블 뷰 레이블 제약 조건
         tableView.snp.makeConstraints {
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
@@ -189,7 +203,7 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
     }
     
-    // 이용 여부에 따른 라벨 및 버튼 텍스트 업데이트하는 메서드
+    // D. 이용 여부에 따른 라벨 및 버튼 텍스트 업데이트하는 메서드
     func updateUI() {
         
         if user.isUsingScooter {
@@ -217,7 +231,7 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    // 이용내역 등 안내 테이블 뷰
+    // D. 이용내역 등 안내 테이블 뷰
     func setUpTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -231,8 +245,20 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = menuItems[indexPath.row]
+        let menuItem = menuItems[indexPath.row]
+        cell.textLabel?.text = menuItem.rawValue
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+            60
+        }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedItem = menuItems[indexPath.row]
+        if selectedItem == .history {
+            navigationController?.pushViewController(HistoryVC(), animated: true)
+        }
     }
     
     @objc func returnButtonTapped() {

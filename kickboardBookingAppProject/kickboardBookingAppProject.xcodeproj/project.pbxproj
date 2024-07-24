@@ -16,6 +16,7 @@
 		2382533D2C4F760A0037F0E6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2382533C2C4F760A0037F0E6 /* Alamofire */; };
 		238253402C4F76150037F0E6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2382533F2C4F76150037F0E6 /* SnapKit */; };
 		238253452C4FA0100037F0E6 /* myPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238253442C4FA0100037F0E6 /* myPageVC.swift */; };
+		238253492C509F760037F0E6 /* HistoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238253482C509F760037F0E6 /* HistoryVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		2324D6042C4E8B4700F3D47B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2324D6062C4E8B4700F3D47B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		238253442C4FA0100037F0E6 /* myPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myPageVC.swift; sourceTree = "<group>"; };
+		238253482C509F760037F0E6 /* HistoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				2324D6062C4E8B4700F3D47B /* Info.plist */,
 				2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */,
 				238253442C4FA0100037F0E6 /* myPageVC.swift */,
+				238253482C509F760037F0E6 /* HistoryVC.swift */,
 			);
 			path = kickboardBookingAppProject;
 			sourceTree = "<group>";
@@ -153,6 +156,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2324D5FD2C4E8B4600F3D47B /* ViewController.swift in Sources */,
+				238253492C509F760037F0E6 /* HistoryVC.swift in Sources */,
 				2324D5F92C4E8B4600F3D47B /* AppDelegate.swift in Sources */,
 				238253452C4FA0100037F0E6 /* myPageVC.swift in Sources */,
 				2324D6002C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld in Sources */,
