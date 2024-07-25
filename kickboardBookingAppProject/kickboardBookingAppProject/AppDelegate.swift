@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import KakaoMapsSDK
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,7 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        SDKInitializer.InitSDK(appKey: "fee1b2fd7185bc9d8c9c433b337417a7")
+        
         return true
     }
 
