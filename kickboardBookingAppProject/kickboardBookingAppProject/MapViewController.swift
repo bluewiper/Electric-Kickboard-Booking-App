@@ -10,7 +10,15 @@ import SnapKit
 import KakaoMapsSDK
 import CoreLocation
 
-class MapViewController: UIViewController, MapControllerDelegate, CLLocationManagerDelegate {
+struct Place {
+    let name: String
+    let latitude: Double
+    let longitude: Double
+}
+
+class MapViewController: UIViewController, MapControllerDelegate, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+    
+    
     
     private lazy var mapView: KMViewContainer = {
         let view = KMViewContainer()
@@ -18,6 +26,8 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     }()
     
     private var locationManager = CLLocationManager()
+    // 검색 결과를 저장할 배열
+    private var searchResults = [Place]() // 검색 결과를 저장할 배열
     
     // 주소 검색바
     private var searchBar: UISearchBar = {
@@ -28,6 +38,14 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         searchBar.clipsToBounds = true
         return searchBar
     }()
+    
+    // 검색 결과를 보여줄 테이블 뷰
+    private var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.isHidden = true
+        return tableView
+    }()
+    
     
     // 킥보드 이용중 확인 레이블
     private var isUsingLabel: UILabel = {
@@ -60,6 +78,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         button.backgroundColor = .lightGray
         button.layer.cornerRadius = 25
         button.tintColor = .systemBlue
+        button.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -115,6 +134,10 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+        
+        searchBar.delegate = self
+        tableView.delegate = self
+        tableView.dataSource = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -183,6 +206,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         [
             mapView,
             searchBar,
+            tableView,
             isUsingLabel,
             returnButton,
             locationButton
@@ -197,6 +221,12 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             $0.top.equalToSuperview().offset(60)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(30)
+        }
+        
+        tableView.snp.makeConstraints {
+            $0.top.equalTo(searchBar.snp.bottom)
+            $0.leading.trailing.equalTo(searchBar)
+            $0.bottom.equalToSuperview()
         }
         
         isUsingLabel.snp.makeConstraints {
@@ -232,7 +262,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         // 지도 초기화 완료 후 위치 정보 가져오기
         updateLocationToCurrentPosition()
     }
-
+    
     
     //addView 실패 이벤트 delegate. 실패에 대한 오류 처리를 진행한다.
     func addViewFailed(_ viewName: String, viewInfoName: String) {
@@ -273,6 +303,10 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         }
     }
     
+    @objc func locationButtonTapped() {
+        updateLocationToCurrentPosition()
+    }
+    
     func mapControllerDidChangeZoomLevel(_ mapController: KakaoMapsSDK.KMController, zoomLevel: Double) {
         print("Zoom level changed to: \(zoomLevel)")
     }
@@ -305,6 +339,80 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     var _observerAdded: Bool = false
     var _auth: Bool = false
     var _appear: Bool = false
+    
+    
+    // MARK: - searchBar
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard !searchText.isEmpty else {
+            tableView.isHidden = true
+            return
+        }
+        fetchSearchSuggestions(query: searchText)
+    }
+    
+
+    
+    func fetchSearchSuggestions(query: String) {
+        let apiKey = "9f8f33a1c0ab59c1e407115394bed294"
+        let urlString = "https://dapi.kakao.com/v2/local/search/keyword.json?query=\(query)"
+        
+        var request = URLRequest(url: URL(string: urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!)
+        request.setValue("KakaoAK \(apiKey)", forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                print("Error fetching search suggestions: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                   let documents = json["documents"] as? [[String: Any]] {
+                    self.searchResults = documents.compactMap {
+                        guard let name = $0["place_name"] as? String,
+                              let x = $0["x"] as? String,
+                              let y = $0["y"] as? String,
+                              let longitude = Double(x),
+                              let latitude = Double(y) else {
+                            return nil
+                        }
+                        return Place(name: name, latitude: latitude, longitude: longitude)
+                    }
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                        self.tableView.isHidden = self.searchResults.isEmpty
+                    }
+                }
+            } catch {
+                print("Error parsing search suggestions: \(error.localizedDescription)")
+            }
+        }
+        task.resume()
+    }
+    
+    // MARK: - TableView
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return searchResults.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell()
+        cell.textLabel?.text = searchResults[indexPath.row].name
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedPlace = searchResults[indexPath.row]
+        searchBar.text = selectedPlace.name
+        tableView.isHidden = true
+        
+        let position = MapPoint(longitude: selectedPlace.longitude, latitude: selectedPlace.latitude)
+        if let mapView = mapController?.getView("mapview") as? KakaoMap {
+            mapView.moveCamera(CameraUpdate.make(target: position, zoomLevel: 17, mapView: mapView))
+            createPoi(at: position)
+        }
+    }
     
     
     // MARK: - LocationManager Delegate
@@ -352,14 +460,14 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
                 }
                 return
             }
-
+            
             guard let currentLocation = self.locationManager.location else {
                 DispatchQueue.main.async {
                     self.showToast(self.view, message: "현재 위치를 가져올 수 없습니다.")
                 }
                 return
             }
-
+            
             let coordinate = currentLocation.coordinate
             let position = MapPoint(longitude: coordinate.longitude, latitude: coordinate.latitude)
             
@@ -388,8 +496,8 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         
         let originalImage = UIImage(systemName: "person.fill")
         guard let image = originalImage?.withTintColor(.systemBlue, renderingMode: .alwaysOriginal) else {
-                return
-            }
+            return
+        }
         
         let icon = PoiIconStyle(symbol: image, anchorPoint: CGPoint(x: 0.5, y: 1.0))
         let perLevelStyle = PerLevelPoiStyle(iconStyle: icon, level: 0)
