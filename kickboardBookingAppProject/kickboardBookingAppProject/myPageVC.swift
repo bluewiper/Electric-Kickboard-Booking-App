@@ -17,14 +17,16 @@ struct UserInfo {
     let nickname: String
     var isUsingScooter: Bool
     var kickboardCode: String
+    var hasHistory: Bool
     
     // D. 초기화 메서드
-    init(userID: String, password: String, nickname: String, kickboardCode: String, isUsingScooter: Bool = false) {
+    init(userID: String, password: String, nickname: String, kickboardCode: String, isUsingScooter: Bool = false, hasHistory: Bool = false) {
         self.loginID = userID
         self.password = password
         self.nickname = nickname
         self.kickboardCode = kickboardCode
         self.isUsingScooter = isUsingScooter
+        self.hasHistory = hasHistory
     }
 }
 
@@ -37,7 +39,7 @@ enum MenuItem: String, CaseIterable {
 }
 
 // D. 더미 데이터
-var user = UserInfo(userID: "johnDoe123", password: "securePassword", nickname: "John", kickboardCode: "KFSE123", isUsingScooter: true)
+var user = UserInfo(userID: "johnDoe123", password: "securePassword", nickname: "John", kickboardCode: "KFSE123", isUsingScooter: false, hasHistory: true)
 
 class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -123,9 +125,6 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         // Do any additional setup after loading the view.
         
         view.backgroundColor = .white
-        
-        // D. 네비게이션 타이틀 설정
-        title = "마이페이지"
         
         // D. 뷰 생성
         view.addSubview(greetingLabel)
