@@ -9,23 +9,44 @@
 /* Begin PBXBuildFile section */
 		2324D5F92C4E8B4600F3D47B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */; };
 		2324D5FB2C4E8B4600F3D47B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */; };
-		2324D5FD2C4E8B4600F3D47B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FC2C4E8B4600F3D47B /* ViewController.swift */; };
 		2324D6002C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */; };
 		2324D6022C4E8B4700F3D47B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2324D6012C4E8B4700F3D47B /* Assets.xcassets */; };
 		2324D6052C4E8B4700F3D47B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 2324D6042C4E8B4700F3D47B /* Base */; };
 		2382533D2C4F760A0037F0E6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2382533C2C4F760A0037F0E6 /* Alamofire */; };
 		238253402C4F76150037F0E6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2382533F2C4F76150037F0E6 /* SnapKit */; };
+		CBCC91FF2C53C29600898AED /* Map2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC91FE2C53C29600898AED /* Map2ViewController.swift */; };
+		CBCC92012C53C2CC00898AED /* RegisterModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92002C53C2CC00898AED /* RegisterModalViewController.swift */; };
+		CBCC92032C53C2E300898AED /* PoiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92022C53C2E300898AED /* PoiView.swift */; };
+		CBCC92052C53C30100898AED /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92042C53C30100898AED /* CoreDataHelper.swift */; };
+		CBCC92072C53C31100898AED /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92062C53C31100898AED /* MainViewController.swift */; };
+		CBCC92092C53C32900898AED /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92082C53C32900898AED /* MainTabBarController.swift */; };
+		CBCC920B2C53C33D00898AED /* MapTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC920A2C53C33D00898AED /* MapTabBarController.swift */; };
+		CBCC920D2C53C35A00898AED /* AddTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC920C2C53C35A00898AED /* AddTabBarController.swift */; };
+		CBCC920F2C53C37900898AED /* MyPageTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC920E2C53C37900898AED /* MyPageTabBarController.swift */; };
+		CBCC92122C53C3FD00898AED /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = CBCC92112C53C3FD00898AED /* KakaoMapsSDK-SPM */; };
+		CBCC92152C53C4FF00898AED /* Kickboard+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92132C53C4FF00898AED /* Kickboard+CoreDataClass.swift */; };
+		CBCC92162C53C4FF00898AED /* Kickboard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92142C53C4FF00898AED /* Kickboard+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2324D5F52C4E8B4600F3D47B /* kickboardBookingAppProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kickboardBookingAppProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		2324D5FC2C4E8B4600F3D47B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		2324D5FF2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = kickboardBookingAppProject.xcdatamodel; sourceTree = "<group>"; };
 		2324D6012C4E8B4700F3D47B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2324D6042C4E8B4700F3D47B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2324D6062C4E8B4700F3D47B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CBCC91FE2C53C29600898AED /* Map2ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map2ViewController.swift; sourceTree = "<group>"; };
+		CBCC92002C53C2CC00898AED /* RegisterModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterModalViewController.swift; sourceTree = "<group>"; };
+		CBCC92022C53C2E300898AED /* PoiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoiView.swift; sourceTree = "<group>"; };
+		CBCC92042C53C30100898AED /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
+		CBCC92062C53C31100898AED /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		CBCC92082C53C32900898AED /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		CBCC920A2C53C33D00898AED /* MapTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTabBarController.swift; sourceTree = "<group>"; };
+		CBCC920C2C53C35A00898AED /* AddTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTabBarController.swift; sourceTree = "<group>"; };
+		CBCC920E2C53C37900898AED /* MyPageTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTabBarController.swift; sourceTree = "<group>"; };
+		CBCC92132C53C4FF00898AED /* Kickboard+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Kickboard+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CBCC92142C53C4FF00898AED /* Kickboard+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Kickboard+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +56,7 @@
 			files = (
 				2382533D2C4F760A0037F0E6 /* Alamofire in Frameworks */,
 				238253402C4F76150037F0E6 /* SnapKit in Frameworks */,
+				CBCC92122C53C3FD00898AED /* KakaoMapsSDK-SPM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +66,8 @@
 		2324D5EC2C4E8B4600F3D47B = {
 			isa = PBXGroup;
 			children = (
+				CBCC92132C53C4FF00898AED /* Kickboard+CoreDataClass.swift */,
+				CBCC92142C53C4FF00898AED /* Kickboard+CoreDataProperties.swift */,
 				2324D5F72C4E8B4600F3D47B /* kickboardBookingAppProject */,
 				2324D5F62C4E8B4600F3D47B /* Products */,
 			);
@@ -60,13 +84,21 @@
 		2324D5F72C4E8B4600F3D47B /* kickboardBookingAppProject */ = {
 			isa = PBXGroup;
 			children = (
+				CBCC92082C53C32900898AED /* MainTabBarController.swift */,
+				CBCC920A2C53C33D00898AED /* MapTabBarController.swift */,
+				CBCC920C2C53C35A00898AED /* AddTabBarController.swift */,
+				CBCC920E2C53C37900898AED /* MyPageTabBarController.swift */,
+				CBCC92062C53C31100898AED /* MainViewController.swift */,
+				CBCC91FE2C53C29600898AED /* Map2ViewController.swift */,
+				CBCC92002C53C2CC00898AED /* RegisterModalViewController.swift */,
+				CBCC92022C53C2E300898AED /* PoiView.swift */,
+				CBCC92042C53C30100898AED /* CoreDataHelper.swift */,
+				2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */,
 				2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */,
 				2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */,
-				2324D5FC2C4E8B4600F3D47B /* ViewController.swift */,
 				2324D6012C4E8B4700F3D47B /* Assets.xcassets */,
 				2324D6032C4E8B4700F3D47B /* LaunchScreen.storyboard */,
 				2324D6062C4E8B4700F3D47B /* Info.plist */,
-				2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */,
 			);
 			path = kickboardBookingAppProject;
 			sourceTree = "<group>";
@@ -90,6 +122,7 @@
 			packageProductDependencies = (
 				2382533C2C4F760A0037F0E6 /* Alamofire */,
 				2382533F2C4F76150037F0E6 /* SnapKit */,
+				CBCC92112C53C3FD00898AED /* KakaoMapsSDK-SPM */,
 			);
 			productName = kickboardBookingAppProject;
 			productReference = 2324D5F52C4E8B4600F3D47B /* kickboardBookingAppProject.app */;
@@ -122,6 +155,7 @@
 			packageReferences = (
 				2382533B2C4F760A0037F0E6 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				2382533E2C4F76150037F0E6 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				CBCC92102C53C3FD00898AED /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */,
 			);
 			productRefGroup = 2324D5F62C4E8B4600F3D47B /* Products */;
 			projectDirPath = "";
@@ -149,8 +183,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2324D5FD2C4E8B4600F3D47B /* ViewController.swift in Sources */,
+				CBCC91FF2C53C29600898AED /* Map2ViewController.swift in Sources */,
+				CBCC92012C53C2CC00898AED /* RegisterModalViewController.swift in Sources */,
+				CBCC92092C53C32900898AED /* MainTabBarController.swift in Sources */,
+				CBCC92052C53C30100898AED /* CoreDataHelper.swift in Sources */,
+				CBCC92152C53C4FF00898AED /* Kickboard+CoreDataClass.swift in Sources */,
+				CBCC92162C53C4FF00898AED /* Kickboard+CoreDataProperties.swift in Sources */,
+				CBCC920B2C53C33D00898AED /* MapTabBarController.swift in Sources */,
 				2324D5F92C4E8B4600F3D47B /* AppDelegate.swift in Sources */,
+				CBCC92032C53C2E300898AED /* PoiView.swift in Sources */,
+				CBCC920F2C53C37900898AED /* MyPageTabBarController.swift in Sources */,
+				CBCC92072C53C31100898AED /* MainViewController.swift in Sources */,
+				CBCC920D2C53C35A00898AED /* AddTabBarController.swift in Sources */,
 				2324D6002C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld in Sources */,
 				2324D5FB2C4E8B4600F3D47B /* SceneDelegate.swift in Sources */,
 			);
@@ -383,6 +427,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		CBCC92102C53C3FD00898AED /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao-mapsSDK/KakaoMapsSDK-SPM.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.10.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -395,6 +447,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2382533E2C4F76150037F0E6 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		CBCC92112C53C3FD00898AED /* KakaoMapsSDK-SPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CBCC92102C53C3FD00898AED /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */;
+			productName = "KakaoMapsSDK-SPM";
 		};
 /* End XCSwiftPackageProductDependency section */
 
