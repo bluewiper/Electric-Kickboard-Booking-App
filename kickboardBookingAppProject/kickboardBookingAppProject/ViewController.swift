@@ -8,10 +8,17 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    var hidesBackButton: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        view.backgroundColor = .white
+        
+        if hidesBackButton {
+            navigationItem.hidesBackButton = true
+        }
     }
 
 
