@@ -39,7 +39,7 @@ enum MenuItem: String, CaseIterable {
 }
 
 // D. 더미 데이터
-var user = UserInfo(userID: "johnDoe123", password: "securePassword", nickname: "John", kickboardCode: "KFSE123", isUsingScooter: false, hasHistory: false)
+var user = UserInfo(userID: "johnDoe123", password: "securePassword", nickname: "John", kickboardCode: "KFSE123", isUsingScooter: false, hasHistory: true)
 
 class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -258,7 +258,7 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         if selectedItem == .history {
             navigationController?.pushViewController(HistoryVC(), animated: true)
         }
-        // D. 마이페이지 목록 선택 후 복귀 했을 때 선택 전으로 초기화 
+        // D. 마이페이지 목록 선택 후 복귀 했을 때 선택 전으로 초기화
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
