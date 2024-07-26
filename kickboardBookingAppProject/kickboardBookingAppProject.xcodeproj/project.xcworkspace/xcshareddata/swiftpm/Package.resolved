@@ -1,5 +1,7 @@
 {
+
   "originHash" : "b3494d87f6bd7ca64f9dc25e536eed033337ef59da321602645d7f935039c740",
+
   "pins" : [
     {
       "identity" : "alamofire",
@@ -11,6 +13,18 @@
       }
     },
     {
+
+      "identity" : "kakaomapssdk-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kakao-mapsSDK/KakaoMapsSDK-SPM.git",
+      "state" : {
+        "revision" : "eb68e7b2ada27deb652acf07b985d111b5c16895",
+        "version" : "2.10.5"
+      }
+    },
+    {
+
+
       "identity" : "snapkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SnapKit/SnapKit.git",
