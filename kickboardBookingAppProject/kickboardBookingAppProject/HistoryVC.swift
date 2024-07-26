@@ -178,7 +178,7 @@ class HistoryVC: UIViewController {
         }
     }
     
-    // D. 세그먼트 컨트롤 초기 설정 : 현재 날짜 
+    // D. 세그먼트 컨트롤 초기 설정 : 현재 날짜
     private func setCurrentDate() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -210,7 +210,7 @@ class HistoryVC: UIViewController {
     
     @objc func segmentChanged(_ sender: UISegmentedControl) {
         let selectedIndex = sender.selectedSegmentIndex
-        // 선택된 인덱스에 따른 동작 처리
+        // D. 선택된 인덱스에 따른 동작 처리
         switch selectedIndex {
         case 0:
             updateDateRange(days: 10)
@@ -225,7 +225,7 @@ class HistoryVC: UIViewController {
     }
     
     func updateUI() {
-        // 이용 여부에 따른 업데이트
+        // D. 이용 여부에 따른 업데이트
         if user.isUsingScooter {
             statusLabel.isHidden = true
             bookingButton.isHidden = true
@@ -246,7 +246,7 @@ class HistoryVC: UIViewController {
     
     
     @objc func bookingButtonTapped() {
-        // 지도 화면으로 이동
+        // D. 지도 화면으로 이동
     }
     
 }
@@ -273,7 +273,7 @@ extension HistoryVC: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
-    // 커스텀 헤더뷰
+    // D. 커스텀 헤더뷰
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CustomSectionHeaderView.headerViewID) as? CustomSectionHeaderView else {
             return nil
@@ -282,7 +282,7 @@ extension HistoryVC: UITableViewDataSource, UITableViewDelegate {
         // D. histories 에 section 번째의 데이터를 가지고 와서 history 변수에 저장
         let history = histories[section]
         
-        // 커스텀 헤더 뷰 제목
+        // D. 커스텀 헤더 뷰 제목
         // D. history 에는 dateString, kickboardInfo 가 들어가 있음
         // D. history에 있는 dateString을 header Title에 대입
         headerView.headerTitle.text = history.dateString

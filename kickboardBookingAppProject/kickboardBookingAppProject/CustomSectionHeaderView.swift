@@ -33,7 +33,7 @@ class CustomSectionHeaderView: UITableViewHeaderFooterView {
     let hStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.backgroundColor = .lightGray
+        stackView.backgroundColor = .white
         stackView.distribution = .fill
         return stackView
     }()
