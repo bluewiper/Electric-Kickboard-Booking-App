@@ -28,10 +28,10 @@ class HistoryVC: UIViewController {
     var histories: [TestHistory] = []
     
     // D. 이용 기간 단위를 보여줄 세그먼트 바
-    let periodSC: UISegmentedControl = {
+    lazy var periodSC: UISegmentedControl = {
         let items = ["10일", "20일", "30일"]
         let segmentedControl = UISegmentedControl(items: items)
-        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
         return segmentedControl
     }()
     
@@ -46,7 +46,6 @@ class HistoryVC: UIViewController {
         textView.layer.borderWidth = 1.4
         textView.layer.borderColor = UIColor.lightGray.cgColor
         textView.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
     
@@ -54,7 +53,6 @@ class HistoryVC: UIViewController {
     private let tableView: UITableView = {
         let tableView = UITableView()
         //        tableView.backgroundColor = .lightGray
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(HistoryCell.self, forCellReuseIdentifier: "HistoryCell")
         return tableView
     }()
@@ -72,7 +70,6 @@ class HistoryVC: UIViewController {
         label.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -99,9 +96,24 @@ class HistoryVC: UIViewController {
         
         navigationItem.title = "이용 내역"
         
-        view.addSubview(periodSC)
+        setupView()
+        setupTableView()
+        setUpLayout()
+        setCurrentDate()
+        updateUI()
+
+    }
+    
+    func setupView() {
         
+        view.addSubview(periodSC)
         view.addSubview(periodTV)
+        view.addSubview(statusLabel)
+        view.addSubview(bookingButton)
+        
+    }
+    
+    func setupTableView() {
         
         // D. 더미데이터로 4개 넣어놓음
         histories.append(TestHistory(dateString: "07월 24일", kickboardInfo: "킥보드 1", ridingTime: "30분", distance: "5km", payment: "2000원"))
@@ -117,19 +129,8 @@ class HistoryVC: UIViewController {
         // D. 헤더 : 초기 섹션 상태 설정 (모든 섹션이 접혀있지 않은 상태)
         sectionIsExpanded = Array(repeating: false, count: numberOfSections(in: tableView))
         
-        
-        view.addSubview(statusLabel)
-        
-        view.addSubview(bookingButton)
-        
         // D. 테이블 뷰 및 버튼 뷰 생성
         view.addSubview(tableView)
-        
-        setUpLayout()
-        
-        setCurrentDate()
-        
-        updateUI()
         
     }
     
@@ -177,7 +178,7 @@ class HistoryVC: UIViewController {
         }
     }
     
-    // D. 현재 날짜 * 선택한 이용기간에 따라 변경 필요 -> updataDate로 만들어서 세그먼트 컨트롤이랑 연결하기
+    // D. 세그먼트 컨트롤 초기 설정 : 현재 날짜 
     private func setCurrentDate() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -187,6 +188,41 @@ class HistoryVC: UIViewController {
         periodTV.text = dateString
     }
     
+    // D. 세그먼트 컨트롤에서 선택된 기간 단위에 따라 이용기간을 업데이트 하는 메서드
+    func updateDateRange(days: Int) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let calendar = Calendar.current
+        let currentDate = Date()
+        
+        if let pastDate = calendar.date(byAdding: .day, value: -days, to: currentDate) {
+            
+            let pastDateString = dateFormatter.string(from: pastDate)
+            let currentDateString = dateFormatter.string(from: currentDate)
+            
+            // D. 텍스트 뷰 텍스트 업데이트
+            periodTV.text = "\(pastDateString) ~ \(currentDateString)"
+            
+        }
+        
+    }
+    
+    @objc func segmentChanged(_ sender: UISegmentedControl) {
+        let selectedIndex = sender.selectedSegmentIndex
+        // 선택된 인덱스에 따른 동작 처리
+        switch selectedIndex {
+        case 0:
+            updateDateRange(days: 10)
+        case 1:
+            updateDateRange(days: 20)
+        case 2:
+            updateDateRange(days: 30)
+        default:
+            break
+        }
+        
+    }
     
     func updateUI() {
         // 이용 여부에 따른 업데이트
