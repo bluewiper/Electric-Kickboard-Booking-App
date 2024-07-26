@@ -28,6 +28,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     private var locationManager = CLLocationManager()
     // 검색 결과를 저장할 배열
     private var searchResults = [Place]() // 검색 결과를 저장할 배열
+    private var searchResultPois: [Poi] = []
     
     // 주소 검색바
     private var searchBar: UISearchBar = {
@@ -408,9 +409,12 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         tableView.isHidden = true
         
         let position = MapPoint(longitude: selectedPlace.longitude, latitude: selectedPlace.latitude)
+        
+        removeSearchResultPois() // 기존 검색 결과 POI 제거
+        
         if let mapView = mapController?.getView("mapview") as? KakaoMap {
             mapView.moveCamera(CameraUpdate.make(target: position, zoomLevel: 17, mapView: mapView))
-            createPoi(at: position)
+            createSearchResultPoi(at: position)
         }
     }
     
@@ -424,7 +428,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         // 현재 위치 콘솔 출력
         print("Current location: \(coordinate.latitude), \(coordinate.longitude)")
         
-        createPoi(at: position)
+        createCurrentLocationPoi(at: position)
         
         if let mapView = mapController?.getView("mapview") as? KakaoMap {
             mapView.moveCamera(CameraUpdate.make(target: position, zoomLevel: 17, mapView: mapView))
@@ -474,7 +478,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             // 현재 위치 콘솔 출력
             print("Update location to current position: \(coordinate.latitude), \(coordinate.longitude)")
             
-            self.createPoi(at: position)
+            self.createCurrentLocationPoi(at: position)
             
             DispatchQueue.main.async {
                 if let mapView = self.mapController?.getView("mapview") as? KakaoMap {
@@ -494,15 +498,25 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         }
         let labelManager = mapView.getLabelManager()
         
-        let originalImage = UIImage(systemName: "person.fill")
-        guard let image = originalImage?.withTintColor(.systemBlue, renderingMode: .alwaysOriginal) else {
+        // 현위치 POI 스타일 정의
+        let currentLocationImage = UIImage(systemName: "figure.wave")
+        guard let currentLocationIcon = currentLocationImage?.withTintColor(.systemBlue, renderingMode: .alwaysOriginal) else {
             return
         }
+        let currentLocationPoiIconStyle = PoiIconStyle(symbol: currentLocationIcon, anchorPoint: CGPoint(x: 0.5, y: 1.0))
+        let currentLocationPerLevelStyle = PerLevelPoiStyle(iconStyle: currentLocationPoiIconStyle, level: 0)
+        let currentLocationPoiStyle = PoiStyle(styleID: "currentLocation", styles: [currentLocationPerLevelStyle])
+        labelManager.addPoiStyle(currentLocationPoiStyle)
         
-        let icon = PoiIconStyle(symbol: image, anchorPoint: CGPoint(x: 0.5, y: 1.0))
-        let perLevelStyle = PerLevelPoiStyle(iconStyle: icon, level: 0)
-        let poiStyle = PoiStyle(styleID: "blue", styles: [perLevelStyle])
-        labelManager.addPoiStyle(poiStyle)
+        // 검색 결과 POI 스타일 정의
+        let searchResultImage = UIImage(systemName: "mappin")
+        guard let searchResultIcon = searchResultImage?.withTintColor(.systemRed, renderingMode: .alwaysOriginal) else {
+            return
+        }
+        let searchResultPoiIconStyle = PoiIconStyle(symbol: searchResultIcon, anchorPoint: CGPoint(x: 0.5, y: 1.0))
+        let searchResultPerLevelStyle = PerLevelPoiStyle(iconStyle: searchResultPoiIconStyle, level: 0)
+        let searchResultPoiStyle = PoiStyle(styleID: "searchResult", styles: [searchResultPerLevelStyle])
+        labelManager.addPoiStyle(searchResultPoiStyle)
     }
     
     func createLabelLayer() { // 레이어생성
@@ -512,7 +526,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         let _ = labelManager.addLabelLayer(option: layer)
     }
     
-    func createPoi(at position: MapPoint) {
+    func createCurrentLocationPoi(at position: MapPoint) {
         guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
             print("Map view is nil")
             return
@@ -523,16 +537,49 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             return
         }
         
-        let options = PoiOptions(styleID: "blue", poiID: "bluePoi")
+        let options = PoiOptions(styleID: "currentLocation", poiID: "currentLocationPoi")
         if let poi = layer.addPoi(option: options, at: position) {
             let coordinate = position.wgsCoord
-            print("POI added at \(coordinate.latitude), \(coordinate.longitude)")
+            print("Current location POI added at \(coordinate.latitude), \(coordinate.longitude)")
             poi.show()
         } else {
-            print("Failed to add POI")
+            print("Failed to add current location POI")
         }
     }
     
+    func createSearchResultPoi(at position: MapPoint) {
+        guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
+            print("Map view is nil")
+            return
+        }
+        let labelManager = mapView.getLabelManager()
+        guard let layer = labelManager.getLabelLayer(layerID: "poiLayer") else {
+            print("POI layer is nil")
+            return
+        }
+        
+        let uniquePoiID = UUID().uuidString // 고유한 ID 생성
+        let options = PoiOptions(styleID: "searchResult", poiID: uniquePoiID)
+        if let poi = layer.addPoi(option: options, at: position) {
+            let coordinate = position.wgsCoord
+            print("Search result POI added at \(coordinate.latitude), \(coordinate.longitude)")
+            poi.show()
+            searchResultPois.append(poi) // 생성된 POI를 배열에 추가
+        } else {
+            print("Failed to add search result POI")
+        }
+    }
     
+    func removeSearchResultPois() {
+        guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
+            return
+        }
+        let labelManager = mapView.getLabelManager()
+        for poi in searchResultPois {
+            poi.hide() // POI를 숨깁니다.
+            // POI를 제거하는 다른 방법이 없다면 숨기는 것만으로 충분할 수 있습니다.
+        }
+        searchResultPois.removeAll() // 배열을 비웁니다.
+    }
     
 }
