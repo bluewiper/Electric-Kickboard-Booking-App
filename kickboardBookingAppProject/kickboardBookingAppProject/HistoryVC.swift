@@ -238,9 +238,15 @@ class HistoryVC: UIViewController {
         if user.hasHistory {
             statusLabel.isHidden = true
             bookingButton.isHidden = true
+            statusLabel.isHidden = true
+            bookingButton.isHidden = true
+            
         } else {
             statusLabel.isHidden = false
             bookingButton.isHidden = false
+            statusLabel.isHidden = false
+            bookingButton.isHidden = false
+            tableView.isHidden = true
         }
     }
     
