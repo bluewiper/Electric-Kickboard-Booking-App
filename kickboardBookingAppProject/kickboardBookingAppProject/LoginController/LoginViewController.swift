@@ -116,8 +116,7 @@ class LoginViewController: UIViewController {
     }
     
     private func navigateToHome() {
-        let homeVC = ViewController()
-        homeVC.hidesBackButton = true // 네비게이션 바의 뒤로가기 버튼 숨기기 설정
+        let homeVC = MainTabBarController()
         navigationController?.pushViewController(homeVC, animated: true)
     }
     
