@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0421FE512C4FC34B0006E16E /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 0421FE502C4FC34B0006E16E /* KakaoMapsSDK-SPM */; };
+		0421FEA22C5612980006E16E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421FE4D2C4FAB200006E16E /* MapViewController.swift */; };
 		2324D5F92C4E8B4600F3D47B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */; };
 		2324D5FB2C4E8B4600F3D47B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */; };
 		2324D5FD2C4E8B4600F3D47B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FC2C4E8B4600F3D47B /* ViewController.swift */; };
@@ -28,7 +29,6 @@
 		8E51FD5B2C509C830037B189 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E51FD5A2C509C830037B189 /* SignUpView.swift */; };
 		CBCC921F2C53E21A00898AED /* Entity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC921D2C53E21A00898AED /* Entity+CoreDataClass.swift */; };
 		CBCC92202C53E21A00898AED /* Entity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC921E2C53E21A00898AED /* Entity+CoreDataProperties.swift */; };
-		CBCC92222C53E56B00898AED /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92212C53E56B00898AED /* MapViewController.swift */; };
 		CBCC92282C53E7CF00898AED /* MyPageTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92252C53E7CF00898AED /* MyPageTabBarController.swift */; };
 		CBCC92292C53E7CF00898AED /* Map2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92242C53E7CF00898AED /* Map2ViewController.swift */; };
 		CBCC922A2C53E7CF00898AED /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92232C53E7CE00898AED /* MainViewController.swift */; };
@@ -41,11 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-
 		0421FE4D2C4FAB200006E16E /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
-
-		0421FE522C4FC5D70006E16E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
-
 		2324D5F52C4E8B4600F3D47B /* kickboardBookingAppProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kickboardBookingAppProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -66,7 +62,6 @@
 		8E51FD5A2C509C830037B189 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		CBCC921D2C53E21A00898AED /* Entity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Entity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CBCC921E2C53E21A00898AED /* Entity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Entity+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		CBCC92212C53E56B00898AED /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		CBCC92232C53E7CE00898AED /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		CBCC92242C53E7CF00898AED /* Map2ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map2ViewController.swift; sourceTree = "<group>"; };
 		CBCC92252C53E7CF00898AED /* MyPageTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTabBarController.swift; sourceTree = "<group>"; };
@@ -113,9 +108,7 @@
 		2324D5F72C4E8B4600F3D47B /* kickboardBookingAppProject */ = {
 			isa = PBXGroup;
 			children = (
-
 				0421FE4D2C4FAB200006E16E /* MapViewController.swift */,
-
 				2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */,
 				2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */,
 				2324D5FC2C4E8B4600F3D47B /* ViewController.swift */,
@@ -131,8 +124,7 @@
 				2324D6012C4E8B4700F3D47B /* Assets.xcassets */,
 				2324D6032C4E8B4700F3D47B /* LaunchScreen.storyboard */,
 				2324D6062C4E8B4700F3D47B /* Info.plist */,
-
-				2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */,
+				2324D5FE2C4E8B4600F3D47B /* Kickboard.xcdatamodeld */,
 				238253442C4FA0100037F0E6 /* myPageVC.swift */,
 				238253482C509F760037F0E6 /* HistoryVC.swift */,
 				23720BFC2C5340250043F1F1 /* HistoryCell.swift */,
@@ -251,15 +243,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0421FEA22C5612980006E16E /* MapViewController.swift in Sources */,
 				CBCC922A2C53E7CF00898AED /* MainViewController.swift in Sources */,
 				8E51FD532C4F95D10037B189 /* SignUpViewController.swift in Sources */,
 				CBCC922B2C53E7CF00898AED /* MainTabBarController.swift in Sources */,
 				CBCC92282C53E7CF00898AED /* MyPageTabBarController.swift in Sources */,
 				2324D5FD2C4E8B4600F3D47B /* ViewController.swift in Sources */,
-
-				0421FE532C4FC5D70006E16E /* MapView.swift in Sources */,
 				CBCC92342C53E7E700898AED /* CoreDataHelper.swift in Sources */,
-
 				23720BFD2C5340250043F1F1 /* HistoryCell.swift in Sources */,
 				238253492C509F760037F0E6 /* HistoryVC.swift in Sources */,
 				2324D5F92C4E8B4600F3D47B /* AppDelegate.swift in Sources */,
@@ -272,7 +262,6 @@
 				8E51FD512C4F94530037B189 /* LoginViewController.swift in Sources */,
 				8E51FD5B2C509C830037B189 /* SignUpView.swift in Sources */,
 				8E51FD572C4FBE140037B189 /* LoginModel.swift in Sources */,
-				CBCC92222C53E56B00898AED /* MapViewController.swift in Sources */,
 				CBCC92322C53E7E700898AED /* RegisterModalViewController.swift in Sources */,
 				CBCC92312C53E7E700898AED /* PoiView.swift in Sources */,
 				8E51FD552C4F98460037B189 /* SplashViewController.swift in Sources */,
