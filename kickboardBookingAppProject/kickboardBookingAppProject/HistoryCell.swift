@@ -34,6 +34,7 @@ class HistoryCell: UITableViewCell {
     let periodDetailVStackView: UIStackView = {
         let stackView = UIStackView()
         /*stackView.backgroundColor = .systemPink*/ // 디버깅용
+//        stackView.backgroundColor = .systemPink // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
         return stackView
@@ -43,6 +44,7 @@ class HistoryCell: UITableViewCell {
     let periodDetailHStackView1: UIStackView = {
         let stackView = UIStackView()
         /*stackView.backgroundColor = .green*/ // 디버깅용
+//        stackView.backgroundColor = .green // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
         return stackView
@@ -74,6 +76,7 @@ class HistoryCell: UITableViewCell {
     let periodDetailHStackView2: UIStackView = {
         let stackView = UIStackView()
         /*stackView.backgroundColor = .yellow*/ // 디버깅용
+//        stackView.backgroundColor = .yellow // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -106,6 +109,7 @@ class HistoryCell: UITableViewCell {
     let periodDetailHStackView3: UIStackView = {
         let stackView = UIStackView()
         /*stackView.backgroundColor = .orange*/ // 디버깅용
+//        stackView.backgroundColor = .orange // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -149,6 +153,7 @@ class HistoryCell: UITableViewCell {
     let paymentDetailVStackView: UIStackView = {
         let stackView = UIStackView()
         /*stackView.backgroundColor = .systemPink*/ // 디버깅용
+//        stackView.backgroundColor = .systemPink // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -159,6 +164,7 @@ class HistoryCell: UITableViewCell {
     let paymentHStackView1: UIStackView = {
         let stackView = UIStackView()
         /*stackView.backgroundColor = .red*/ // 디버깅용
+//        stackView.backgroundColor = .red // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -197,6 +203,14 @@ class HistoryCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // D. 데이터 설정 메서드 추가
+    func configure(with history: TestHistory) {
+        kickboardInfo.text = history.kickboardInfo
+        ridingTimeLabel.text = history.ridingTime
+        distanceLabel.text = history.distance
+        paymentDetailLabel.text = history.payment
     }
     
     private func setupView() {
