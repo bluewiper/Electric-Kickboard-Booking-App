@@ -14,10 +14,10 @@ class MainTabBarController: UITabBarController {
     view.backgroundColor = .red
     configureController()
       
-      // a. 네비게이션 바 숨기기
+      // a. 네비게이션 바 숨기기 - 적용이 안되서 모달창으로 변경
 //      navigationController?.isNavigationBarHidden = true
       
-      // 좌측 끝 밀기 제스처 비활성화
+      // 좌측 끝 밀기 제스처 비활성화 - 안먹혀서 모달창으로 변경
 //      if let navigationController = self.viewControllers?.first as? UINavigationController {
 //          navigationController.interactivePopGestureRecognizer?.isEnabled = false
 //      }

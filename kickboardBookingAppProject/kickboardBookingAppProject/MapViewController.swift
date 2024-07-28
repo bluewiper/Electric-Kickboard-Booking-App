@@ -166,11 +166,20 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleMapTap(_:)))
         mapView.addGestureRecognizer(tapGesture)
     }
-    
+    // a. 변경사항
     override func viewWillAppear(_ animated: Bool) {
-        addObservers()
-        _appear = true
-    }
+          super.viewWillAppear(animated)
+          if !hasGeneratedRandomPois {
+              addObservers()
+              _appear = true
+          }
+      }
+    // 이전 코드
+//    override func viewWillAppear(_ animated: Bool) {
+//        addObservers()
+//        _appear = true
+//    }
+//
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -184,18 +193,29 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             self.updateLocationToCurrentPosition()
         }
     }
-    
+    //a. 변경사항
     override func viewWillDisappear(_ animated: Bool) {
-        _appear = false
-        mapController?.pauseEngine()  //렌더링 중지.
+        super.viewWillDisappear(animated)
+        mapController?.pauseEngine()
     }
+    // 이전코드
+//    override func viewWillDisappear(_ animated: Bool) {
+//        _appear = false
+//        mapController?.pauseEngine()  //렌더링 중지.
+//    }
     
+    // a. 변경사항
     override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         removeObservers()
-        mapController?.resetEngine()
-        //엔진 정지. 추가되었던 ViewBase들이 삭제된다.
-        
     }
+    // 이전코드.
+//    override func viewDidDisappear(_ animated: Bool) {
+//        removeObservers()
+//        mapController?.resetEngine()
+//        //엔진 정지. 추가되었던 ViewBase들이 삭제된다.
+//        
+//    }
     
     // 인증 실패시 호출.
     func authenticationFailed(_ errorCode: Int, desc: String) {
