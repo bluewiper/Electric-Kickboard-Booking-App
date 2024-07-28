@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0421FE512C4FC34B0006E16E /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 0421FE502C4FC34B0006E16E /* KakaoMapsSDK-SPM */; };
-		0421FE532C4FC5D70006E16E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421FE522C4FC5D70006E16E /* MapView.swift */; };
 		2324D5F92C4E8B4600F3D47B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */; };
 		2324D5FB2C4E8B4600F3D47B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */; };
 		2324D5FD2C4E8B4600F3D47B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FC2C4E8B4600F3D47B /* ViewController.swift */; };
@@ -42,7 +41,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+
+		0421FE4D2C4FAB200006E16E /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+
 		0421FE522C4FC5D70006E16E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+
 		2324D5F52C4E8B4600F3D47B /* kickboardBookingAppProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kickboardBookingAppProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -110,7 +113,9 @@
 		2324D5F72C4E8B4600F3D47B /* kickboardBookingAppProject */ = {
 			isa = PBXGroup;
 			children = (
-				CBCC92212C53E56B00898AED /* MapViewController.swift */,
+
+				0421FE4D2C4FAB200006E16E /* MapViewController.swift */,
+
 				2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */,
 				2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */,
 				2324D5FC2C4E8B4600F3D47B /* ViewController.swift */,
@@ -126,8 +131,8 @@
 				2324D6012C4E8B4700F3D47B /* Assets.xcassets */,
 				2324D6032C4E8B4700F3D47B /* LaunchScreen.storyboard */,
 				2324D6062C4E8B4700F3D47B /* Info.plist */,
-				2324D5FE2C4E8B4600F3D47B /* Kickboard.xcdatamodeld */,
-				0421FE522C4FC5D70006E16E /* MapView.swift */,
+
+				2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */,
 				238253442C4FA0100037F0E6 /* myPageVC.swift */,
 				238253482C509F760037F0E6 /* HistoryVC.swift */,
 				23720BFC2C5340250043F1F1 /* HistoryCell.swift */,
@@ -251,8 +256,10 @@
 				CBCC922B2C53E7CF00898AED /* MainTabBarController.swift in Sources */,
 				CBCC92282C53E7CF00898AED /* MyPageTabBarController.swift in Sources */,
 				2324D5FD2C4E8B4600F3D47B /* ViewController.swift in Sources */,
+
 				0421FE532C4FC5D70006E16E /* MapView.swift in Sources */,
 				CBCC92342C53E7E700898AED /* CoreDataHelper.swift in Sources */,
+
 				23720BFD2C5340250043F1F1 /* HistoryCell.swift in Sources */,
 				238253492C509F760037F0E6 /* HistoryVC.swift in Sources */,
 				2324D5F92C4E8B4600F3D47B /* AppDelegate.swift in Sources */,

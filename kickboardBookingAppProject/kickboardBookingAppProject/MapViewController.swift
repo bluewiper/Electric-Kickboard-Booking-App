@@ -29,6 +29,17 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     // 검색 결과를 저장할 배열
     private var searchResults = [Place]() // 검색 결과를 저장할 배열
     private var searchResultPois: [Poi] = []
+    private var hasGeneratedRandomPois = false // 랜덤 POI가 생성되었는지 여부를 추적
+    private var poiIDs: [Poi: String] = [:]
+    
+    private var isKickboardInUse = false {
+        didSet {
+            updateKickboardUsageStatus()
+        }
+    }
+    // 스타일 정보를 저장하기 위한 Dictionary
+    private var poiStyles: [Poi: String] = [:]
+    
     
     // 주소 검색바
     private var searchBar: UISearchBar = {
@@ -66,6 +77,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         button.titleLabel?.font = .boldSystemFont(ofSize: 20)
         button.backgroundColor = .lightGray
         button.layer.cornerRadius = 25
+        button.isUserInteractionEnabled = false
         return button
     }()
     
@@ -144,6 +156,15 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         searchBar.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
+        
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell") // 셀 등록
+        
+        // 반납하기 버튼 이벤트 추가
+        returnButton.addTarget(self, action: #selector(returnButtonTapped), for: .touchUpInside)
+        
+        // 맵뷰에 터치 이벤트 추가
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleMapTap(_:)))
+        mapView.addGestureRecognizer(tapGesture)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -157,6 +178,11 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             addViews()
         }
         mapController?.activateEngine()
+        
+        // 지도 초기화 완료 후 위치 정보 가져오기
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.updateLocationToCurrentPosition()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -212,10 +238,10 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         [
             mapView,
             searchBar,
-            tableView,
             isUsingLabel,
             returnButton,
-            locationButton
+            locationButton,
+            tableView
         ].forEach { view.addSubview($0) }
         
         mapView.snp.makeConstraints {
@@ -231,7 +257,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         
         tableView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom)
-            $0.leading.trailing.equalTo(searchBar)
+            $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
         
@@ -267,6 +293,17 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         
         // 지도 초기화 완료 후 위치 정보 가져오기
         updateLocationToCurrentPosition()
+        
+        // 랜덤 POI 생성 (최초 한 번만 생성)
+        if !hasGeneratedRandomPois {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                if let currentLocation = self.locationManager.location {
+                    print("Generating random POI near location after view initialized") // 로그 추가
+                    self.createRandomPoiNearLocation(coordinate: currentLocation.coordinate)
+                    self.hasGeneratedRandomPois = true
+                }
+            }
+        }
     }
     
     
@@ -310,7 +347,13 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     }
     
     @objc func locationButtonTapped() {
-        updateLocationToCurrentPosition()
+        // 랜덤 POI 생성 로직을 제거
+        if let currentLocation = locationManager.location {
+            let position = MapPoint(longitude: currentLocation.coordinate.longitude, latitude: currentLocation.coordinate.latitude)
+            if let mapView = mapController?.getView("mapview") as? KakaoMap {
+                mapView.moveCamera(CameraUpdate.make(target: position, zoomLevel: 17, mapView: mapView))
+            }
+        }
     }
     
     func mapControllerDidChangeZoomLevel(_ mapController: KakaoMapsSDK.KMController, zoomLevel: Double) {
@@ -350,14 +393,14 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     // MARK: - searchBar
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        guard !searchText.isEmpty else {
+        if !searchText.isEmpty {
+            fetchSearchSuggestions(query: searchText)
+        } else {
+            searchResults.removeAll()
+            tableView.reloadData()
             tableView.isHidden = true
-            return
         }
-        fetchSearchSuggestions(query: searchText)
     }
-    
-
     
     func fetchSearchSuggestions(query: String) {
         let apiKey = "9f8f33a1c0ab59c1e407115394bed294"
@@ -385,10 +428,12 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
                         }
                         return Place(name: name, latitude: latitude, longitude: longitude)
                     }
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                        self.tableView.isHidden = self.searchResults.isEmpty
-                    }
+                } else {
+                    self.searchResults = [] // 검색 결과가 없을 경우 빈 배열 설정
+                }
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    self.tableView.isHidden = false
                 }
             } catch {
                 print("Error parsing search suggestions: \(error.localizedDescription)")
@@ -399,16 +444,28 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     
     // MARK: - TableView
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResults.count
+        return max(searchResults.count, 1) // 최소 1개의 셀을 반환합니다.
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = searchResults[indexPath.row].name
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        
+        if searchResults.isEmpty {
+            cell.textLabel?.text = "검색 결과가 없습니다."
+            cell.textLabel?.textColor = .gray
+            cell.selectionStyle = .none // 선택 불가능하게 설정
+        } else {
+            cell.textLabel?.text = searchResults[indexPath.row].name
+            cell.textLabel?.textColor = .black
+            cell.selectionStyle = .default // 선택 가능하게 설정
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard !searchResults.isEmpty else { return } // 검색 결과가 없을 때 선택 불가능하게 합니다.
+        
         let selectedPlace = searchResults[indexPath.row]
         searchBar.text = selectedPlace.name
         tableView.isHidden = true
@@ -433,14 +490,17 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         // 현재 위치 콘솔 출력
         print("Current location: \(coordinate.latitude), \(coordinate.longitude)")
         
+        // 현재 위치 POI 생성
         createCurrentLocationPoi(at: position)
         
+        // 모든 POI를 추가한 후 지도 이동
         if let mapView = mapController?.getView("mapview") as? KakaoMap {
             mapView.moveCamera(CameraUpdate.make(target: position, zoomLevel: 17, mapView: mapView))
         }
         
         manager.stopUpdatingLocation()
     }
+    
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Failed to find user's location: \(error.localizedDescription)")
     }
@@ -469,26 +529,16 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
                 }
                 return
             }
-            
+
             guard let currentLocation = self.locationManager.location else {
                 DispatchQueue.main.async {
                     self.showToast(self.view, message: "현재 위치를 가져올 수 없습니다.")
                 }
                 return
             }
-            
-            let coordinate = currentLocation.coordinate
-            let position = MapPoint(longitude: coordinate.longitude, latitude: coordinate.latitude)
-            
-            // 현재 위치 콘솔 출력
-            print("Update location to current position: \(coordinate.latitude), \(coordinate.longitude)")
-            
-            self.createCurrentLocationPoi(at: position)
-            
+
             DispatchQueue.main.async {
-                if let mapView = self.mapController?.getView("mapview") as? KakaoMap {
-                    mapView.moveCamera(CameraUpdate.make(target: position, zoomLevel: 17, mapView: mapView))
-                }
+                self.locationManager(self.locationManager, didUpdateLocations: [currentLocation])
             }
         }
     }
@@ -497,7 +547,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     
     //MARK: - POI
     
-    func createPoiStyle() { // 보이는 스타일 정의
+    func createPoiStyle() {
         guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
             return
         }
@@ -522,6 +572,18 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         let searchResultPerLevelStyle = PerLevelPoiStyle(iconStyle: searchResultPoiIconStyle, level: 0)
         let searchResultPoiStyle = PoiStyle(styleID: "searchResult", styles: [searchResultPerLevelStyle])
         labelManager.addPoiStyle(searchResultPoiStyle)
+        
+        // 랜덤 POI 스타일 정의
+        let randomPoiImage = UIImage(systemName: "bicycle.circle.fill")
+        guard let randomPoiIcon = randomPoiImage?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal) else {
+            print("Failed to create random POI icon") // 로그 추가
+            return
+        }
+        let randomPoiIconStyle = PoiIconStyle(symbol: randomPoiIcon, anchorPoint: CGPoint(x: 0.5, y: 1.0))
+        let randomPoiPerLevelStyle = PerLevelPoiStyle(iconStyle: randomPoiIconStyle, level: 0)
+        let randomPoiStyle = PoiStyle(styleID: "randomPoi", styles: [randomPoiPerLevelStyle])
+        labelManager.addPoiStyle(randomPoiStyle)
+        print("Random POI style added successfully") // 로그 추가
     }
     
     func createLabelLayer() { // 레이어생성
@@ -575,6 +637,66 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         }
     }
     
+    // 랜덤 위치에 포이 생성
+    func createRandomPoiNearLocation(coordinate: CLLocationCoordinate2D) {
+        guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
+            print("Map view is nil")
+            return
+        }
+        guard !hasGeneratedRandomPois else { return } // 이미 생성된 경우 리턴
+
+        for _ in 1...5 {
+            let randomDistance = Double.random(in: 10...500) // 10에서 500미터 사이의 랜덤 거리
+            let randomAngle = Double.random(in: 0...(2 * .pi)) // 0에서 2파이 사이의 랜덤 각도
+            
+            let deltaLat = (randomDistance / 111000) * cos(randomAngle)
+            let deltaLon = (randomDistance / (111000 * cos(coordinate.latitude * .pi / 180))) * sin(randomAngle)
+            
+            let randomLat = coordinate.latitude + deltaLat
+            let randomLon = coordinate.longitude + deltaLon
+            
+            let position = MapPoint(longitude: randomLon, latitude: randomLat)
+            print("Random location: \(randomLat), \(randomLon)") // 랜덤 위치 콘솔 출력
+            print("Calling createRandomPoi") // 로그 추가
+            createRandomPoi(at: position)
+        }
+
+        hasGeneratedRandomPois = true // 생성 완료 플래그 설정
+    }
+
+    private var kickboardCount = 0
+    
+    private var poiNames: [Poi: String] = [:]
+    
+    private var rentedKickboard: Poi?
+
+    func createRandomPoi(at position: MapPoint) {
+        guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
+            print("Map view is nil")
+            return
+        }
+        let labelManager = mapView.getLabelManager()
+        guard let layer = labelManager.getLabelLayer(layerID: "poiLayer") else {
+            print("POI layer is nil")
+            return
+        }
+        
+        let uniquePoiID = UUID().uuidString
+        let options = PoiOptions(styleID: "randomPoi", poiID: uniquePoiID)
+        if let poi = layer.addPoi(option: options, at: position) {
+            let coordinate = position.wgsCoord
+            kickboardCount += 1 // 순서 증가
+            poiStyles[poi] = "randomPoi"
+            let kickboardName = "\(kickboardCount)번 킥보드"
+            poiNames[poi] = kickboardName // 이름 저장
+            poiIDs[poi] = uniquePoiID // ID 저장
+            print("\(kickboardName) POI added at \(coordinate.latitude), \(coordinate.longitude)") // 로그 출력
+            poi.show()
+        } else {
+            print("Failed to add random POI")
+        }
+    }
+    
     func removeSearchResultPois() {
         guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
             return
@@ -587,4 +709,113 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         searchResultPois.removeAll() // 배열을 비웁니다.
     }
     
+    // MARK: - 킥보드 이용 상태
+    private func updateKickboardUsageStatus() {
+        isUsingLabel.text = isKickboardInUse ? "이용상태: O" : "이용상태: X"
+        returnButton.isEnabled = isKickboardInUse
+        returnButton.isUserInteractionEnabled = isKickboardInUse // 상태에 따라 사용자 상호작용 설정
+        returnButton.backgroundColor = isKickboardInUse ? .systemBlue : .lightGray
+        isUsingLabel.backgroundColor = isKickboardInUse ? #colorLiteral(red: 0.05629429966, green: 0.8279358745, blue: 0.3545475006, alpha: 1) : .lightGray // 레이블 색상 변경
+    }
+    
+    private func showPOIAlert(for poi: Poi) {
+        guard let poiName = poiNames[poi] else { return }
+        let alert = UIAlertController(title: poiName, message: "대여하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "예", style: .default, handler: { _ in
+            self.isKickboardInUse = true
+            self.rentedKickboard = poi // 대여 중인 킥보드 저장
+            poi.hide() // 대여 중인 킥보드 숨기기
+            self.updateKickboardUsageStatus()
+        }))
+        alert.addAction(UIAlertAction(title: "아니오", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    @objc private func returnButtonTapped() {
+        let alert = UIAlertController(title: "반납 완료", message: "반납이 완료되었습니다.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: { _ in
+            self.isKickboardInUse = false
+            if let rentedKickboard = self.rentedKickboard {
+                rentedKickboard.show() // 숨겨진 킥보드 보이게 하기
+                self.movePoiToMapCenter(poi: rentedKickboard) // POI를 카메라 정중앙으로 이동
+                self.rentedKickboard = nil // 대여 중인 킥보드 초기화
+            }
+            self.updateKickboardUsageStatus()
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    // POI를 카메라 정중앙으로 이동시키는 함수
+    private func movePoiToMapCenter(poi: Poi) {
+        if let mapView = mapController?.getView("mapview") as? KakaoMap {
+            // KakaoMap의 중심 좌표를 얻어옴
+            let centerPoint = CGPoint(x: mapView.viewRect.midX, y: mapView.viewRect.midY)
+            let centerPosition = mapView.getPosition(centerPoint)
+            
+            let labelManager = mapView.getLabelManager()
+            let layer = labelManager.getLabelLayer(layerID: "poiLayer")
+            
+            // 기존 POI 제거
+            if let poiID = poiIDs[poi] {
+                layer?.removePoi(poiID: poiID)
+            }
+            
+            // 새로운 POI 생성
+            let uniquePoiID = UUID().uuidString
+            let poiOptions = PoiOptions(styleID: poiStyles[poi] ?? "", poiID: uniquePoiID)
+            if let newPoi = layer?.addPoi(option: poiOptions, at: centerPosition) {
+                newPoi.show()
+                poiStyles[newPoi] = poiStyles[poi]
+                poiNames[newPoi] = poiNames[poi]
+                poiIDs[newPoi] = uniquePoiID // 새 POI의 ID 저장
+            }
+        }
+    }
+
+    
+    @objc private func handleMapTap(_ sender: UITapGestureRecognizer) {
+        let point = sender.location(in: mapView)
+        if let mapPoint = getPosition(point) {
+            if let nearestPOI = touchedPOI(mapPoint.wgsCoord, 0.0001) { // 감지 범위를 줄임
+                poiTouched(nearestPOI)
+            }
+        }
+    }
+
+    private func poiTouched(_ poi: Poi) {
+        if !isKickboardInUse {
+            showPOIAlert(for: poi)
+        }
+    }
+
+    private func getPosition(_ point: CGPoint) -> MapPoint? {
+        let mapView: KakaoMap? = mapController?.getView("mapview") as? KakaoMap
+        return mapView?.getPosition(point)
+    }
+
+    private func touchedPOI(_ coord: GeoCoordinate, _ dist: Double) -> Poi? {
+        if let map = mapController?.getView("mapview") as? KakaoMap {
+            let manager = map.getLabelManager()
+            let layer = manager.getLabelLayer(layerID: "poiLayer")
+            guard let pois = layer?.getAllPois() else { return nil }
+            var touchedPois: [Poi : Double] = [:]
+            for poi in pois {
+                // 저장된 스타일 정보를 사용하여 랜덤 POI만 필터링
+                if poiStyles[poi] == "randomPoi" {
+                    let latDist = (coord.latitude - poi.position.wgsCoord.latitude)
+                    let longDist = (coord.longitude - poi.position.wgsCoord.longitude)
+                    let powDist = latDist * latDist + longDist * longDist
+                    let distWithPoi = sqrt(powDist)
+                    if distWithPoi < dist {
+                        touchedPois[poi] = distWithPoi
+                    }
+                }
+            }
+            if touchedPois.isEmpty { return nil }
+            return touchedPois.sorted(by: { $0.value < $1.value }).first?.key
+        }
+        return nil
+    }
+    
 }
+
