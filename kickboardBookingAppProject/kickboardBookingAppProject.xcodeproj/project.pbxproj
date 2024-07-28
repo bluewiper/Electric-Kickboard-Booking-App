@@ -7,13 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0421FE4E2C4FAB200006E16E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421FE4D2C4FAB200006E16E /* MapViewController.swift */; };
 		0421FE512C4FC34B0006E16E /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 0421FE502C4FC34B0006E16E /* KakaoMapsSDK-SPM */; };
 		0421FE532C4FC5D70006E16E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421FE522C4FC5D70006E16E /* MapView.swift */; };
 		2324D5F92C4E8B4600F3D47B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */; };
 		2324D5FB2C4E8B4600F3D47B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */; };
 		2324D5FD2C4E8B4600F3D47B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FC2C4E8B4600F3D47B /* ViewController.swift */; };
-		2324D6002C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */; };
+		2324D6002C4E8B4600F3D47B /* Kickboard.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FE2C4E8B4600F3D47B /* Kickboard.xcdatamodeld */; };
 		2324D6022C4E8B4700F3D47B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2324D6012C4E8B4700F3D47B /* Assets.xcassets */; };
 		2324D6052C4E8B4700F3D47B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 2324D6042C4E8B4700F3D47B /* Base */; };
 		23720BFD2C5340250043F1F1 /* HistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23720BFC2C5340250043F1F1 /* HistoryCell.swift */; };
@@ -28,10 +27,21 @@
 		8E51FD572C4FBE140037B189 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E51FD562C4FBE140037B189 /* LoginModel.swift */; };
 		8E51FD592C5090FC0037B189 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E51FD582C5090FC0037B189 /* LoginView.swift */; };
 		8E51FD5B2C509C830037B189 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E51FD5A2C509C830037B189 /* SignUpView.swift */; };
+		CBCC921F2C53E21A00898AED /* Entity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC921D2C53E21A00898AED /* Entity+CoreDataClass.swift */; };
+		CBCC92202C53E21A00898AED /* Entity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC921E2C53E21A00898AED /* Entity+CoreDataProperties.swift */; };
+		CBCC92222C53E56B00898AED /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92212C53E56B00898AED /* MapViewController.swift */; };
+		CBCC92282C53E7CF00898AED /* MyPageTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92252C53E7CF00898AED /* MyPageTabBarController.swift */; };
+		CBCC92292C53E7CF00898AED /* Map2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92242C53E7CF00898AED /* Map2ViewController.swift */; };
+		CBCC922A2C53E7CF00898AED /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92232C53E7CE00898AED /* MainViewController.swift */; };
+		CBCC922B2C53E7CF00898AED /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92272C53E7CF00898AED /* MainTabBarController.swift */; };
+		CBCC922C2C53E7CF00898AED /* MapTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92262C53E7CF00898AED /* MapTabBarController.swift */; };
+		CBCC92312C53E7E700898AED /* PoiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC922E2C53E7E700898AED /* PoiView.swift */; };
+		CBCC92322C53E7E700898AED /* RegisterModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC922D2C53E7E700898AED /* RegisterModalViewController.swift */; };
+		CBCC92332C53E7E700898AED /* AddTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC92302C53E7E700898AED /* AddTabBarController.swift */; };
+		CBCC92342C53E7E700898AED /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCC922F2C53E7E700898AED /* CoreDataHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0421FE4D2C4FAB200006E16E /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		0421FE522C4FC5D70006E16E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		2324D5F52C4E8B4600F3D47B /* kickboardBookingAppProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kickboardBookingAppProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -51,6 +61,18 @@
 		8E51FD562C4FBE140037B189 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		8E51FD582C5090FC0037B189 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		8E51FD5A2C509C830037B189 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		CBCC921D2C53E21A00898AED /* Entity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Entity+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CBCC921E2C53E21A00898AED /* Entity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Entity+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		CBCC92212C53E56B00898AED /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		CBCC92232C53E7CE00898AED /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		CBCC92242C53E7CF00898AED /* Map2ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map2ViewController.swift; sourceTree = "<group>"; };
+		CBCC92252C53E7CF00898AED /* MyPageTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTabBarController.swift; sourceTree = "<group>"; };
+		CBCC92262C53E7CF00898AED /* MapTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTabBarController.swift; sourceTree = "<group>"; };
+		CBCC92272C53E7CF00898AED /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		CBCC922D2C53E7E700898AED /* RegisterModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterModalViewController.swift; sourceTree = "<group>"; };
+		CBCC922E2C53E7E700898AED /* PoiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoiView.swift; sourceTree = "<group>"; };
+		CBCC922F2C53E7E700898AED /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
+		CBCC92302C53E7E700898AED /* AddTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTabBarController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +92,8 @@
 		2324D5EC2C4E8B4600F3D47B = {
 			isa = PBXGroup;
 			children = (
+				CBCC921D2C53E21A00898AED /* Entity+CoreDataClass.swift */,
+				CBCC921E2C53E21A00898AED /* Entity+CoreDataProperties.swift */,
 				2324D5F72C4E8B4600F3D47B /* kickboardBookingAppProject */,
 				2324D5F62C4E8B4600F3D47B /* Products */,
 			);
@@ -86,17 +110,24 @@
 		2324D5F72C4E8B4600F3D47B /* kickboardBookingAppProject */ = {
 			isa = PBXGroup;
 			children = (
+				CBCC92212C53E56B00898AED /* MapViewController.swift */,
 				2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */,
 				2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */,
 				2324D5FC2C4E8B4600F3D47B /* ViewController.swift */,
+				CBCC92272C53E7CF00898AED /* MainTabBarController.swift */,
+				CBCC92232C53E7CE00898AED /* MainViewController.swift */,
+				CBCC92242C53E7CF00898AED /* Map2ViewController.swift */,
+				CBCC92262C53E7CF00898AED /* MapTabBarController.swift */,
+				CBCC92252C53E7CF00898AED /* MyPageTabBarController.swift */,
+				CBCC92302C53E7E700898AED /* AddTabBarController.swift */,
+				CBCC922F2C53E7E700898AED /* CoreDataHelper.swift */,
+				CBCC922E2C53E7E700898AED /* PoiView.swift */,
+				CBCC922D2C53E7E700898AED /* RegisterModalViewController.swift */,
 				2324D6012C4E8B4700F3D47B /* Assets.xcassets */,
 				2324D6032C4E8B4700F3D47B /* LaunchScreen.storyboard */,
 				2324D6062C4E8B4700F3D47B /* Info.plist */,
-				2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */,
-
-				0421FE4D2C4FAB200006E16E /* MapViewController.swift */,
+				2324D5FE2C4E8B4600F3D47B /* Kickboard.xcdatamodeld */,
 				0421FE522C4FC5D70006E16E /* MapView.swift */,
-
 				238253442C4FA0100037F0E6 /* myPageVC.swift */,
 				238253482C509F760037F0E6 /* HistoryVC.swift */,
 				23720BFC2C5340250043F1F1 /* HistoryCell.swift */,
@@ -104,7 +135,6 @@
 				8E51FD5D2C50A5840037B189 /* Loginmodel */,
 				8E51FD5C2C50A5650037B189 /* Loginview */,
 				8E51FD5E2C50A59C0037B189 /* LoginController */,
-
 			);
 			path = kickboardBookingAppProject;
 			sourceTree = "<group>";
@@ -216,25 +246,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBCC922A2C53E7CF00898AED /* MainViewController.swift in Sources */,
 				8E51FD532C4F95D10037B189 /* SignUpViewController.swift in Sources */,
+				CBCC922B2C53E7CF00898AED /* MainTabBarController.swift in Sources */,
+				CBCC92282C53E7CF00898AED /* MyPageTabBarController.swift in Sources */,
 				2324D5FD2C4E8B4600F3D47B /* ViewController.swift in Sources */,
-
 				0421FE532C4FC5D70006E16E /* MapView.swift in Sources */,
-
+				CBCC92342C53E7E700898AED /* CoreDataHelper.swift in Sources */,
 				23720BFD2C5340250043F1F1 /* HistoryCell.swift in Sources */,
 				238253492C509F760037F0E6 /* HistoryVC.swift in Sources */,
-
 				2324D5F92C4E8B4600F3D47B /* AppDelegate.swift in Sources */,
 				23720BFF2C5340A20043F1F1 /* CustomSectionHeaderView.swift in Sources */,
 				238253452C4FA0100037F0E6 /* myPageVC.swift in Sources */,
 				8E51FD592C5090FC0037B189 /* LoginView.swift in Sources */,
-				2324D6002C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld in Sources */,
+				CBCC92292C53E7CF00898AED /* Map2ViewController.swift in Sources */,
+				2324D6002C4E8B4600F3D47B /* Kickboard.xcdatamodeld in Sources */,
+				CBCC922C2C53E7CF00898AED /* MapTabBarController.swift in Sources */,
 				8E51FD512C4F94530037B189 /* LoginViewController.swift in Sources */,
 				8E51FD5B2C509C830037B189 /* SignUpView.swift in Sources */,
 				8E51FD572C4FBE140037B189 /* LoginModel.swift in Sources */,
+				CBCC92222C53E56B00898AED /* MapViewController.swift in Sources */,
+				CBCC92322C53E7E700898AED /* RegisterModalViewController.swift in Sources */,
+				CBCC92312C53E7E700898AED /* PoiView.swift in Sources */,
 				8E51FD552C4F98460037B189 /* SplashViewController.swift in Sources */,
 				2324D5FB2C4E8B4600F3D47B /* SceneDelegate.swift in Sources */,
-				0421FE4E2C4FAB200006E16E /* MapViewController.swift in Sources */,
+				CBCC92332C53E7E700898AED /* AddTabBarController.swift in Sources */,
+				CBCC921F2C53E21A00898AED /* Entity+CoreDataClass.swift in Sources */,
+				CBCC92202C53E21A00898AED /* Entity+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -494,13 +532,13 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
-		2324D5FE2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodeld */ = {
+		2324D5FE2C4E8B4600F3D47B /* Kickboard.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
 				2324D5FF2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodel */,
 			);
 			currentVersion = 2324D5FF2C4E8B4600F3D47B /* kickboardBookingAppProject.xcdatamodel */;
-			path = kickboardBookingAppProject.xcdatamodeld;
+			path = Kickboard.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

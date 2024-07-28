@@ -126,10 +126,15 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     }
     
     // MARK: - viewDidLoad
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         addViews()
+        
+        navigationController?.navigationBar.isHidden = true
+    
         
         // Location Manager 설정
         locationManager.delegate = self
