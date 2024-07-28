@@ -25,6 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let splashVC = SplashViewController()
         let naviVC = UINavigationController(rootViewController: splashVC)
+        naviVC.isNavigationBarHidden = true // 네비게이션 바 숨기기
         
         self.window = window
         
