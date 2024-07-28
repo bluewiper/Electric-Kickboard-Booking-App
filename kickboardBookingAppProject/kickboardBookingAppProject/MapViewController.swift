@@ -146,6 +146,8 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         configureUI()
         addViews()
         
+        navigationController?.navigationBar.isHidden = true
+        
         // Location Manager 설정
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
