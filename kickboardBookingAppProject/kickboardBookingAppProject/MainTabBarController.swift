@@ -19,8 +19,8 @@ class MainTabBarController: UITabBarController {
     view.backgroundColor = .blue
     tabBar.backgroundColor = .white
     let map = tabBarNavigationController(unselectedImage: #imageLiteral(resourceName: "map-pin"), selectedImage: #imageLiteral(resourceName: "map-pin"), rootViewController: MapViewController())
-    let add = tabBarNavigationController(unselectedImage: #imageLiteral(resourceName: "pluscircle"), selectedImage: #imageLiteral(resourceName: "pluscircle"), rootViewController: MainViewController())
-    let myPage = tabBarNavigationController(unselectedImage: #imageLiteral(resourceName: "user"), selectedImage: #imageLiteral(resourceName: "user"), rootViewController: myPageVC())
+    let add = tabBarNavigationController(unselectedImage: #imageLiteral(resourceName: "add-pin"), selectedImage: #imageLiteral(resourceName: "add-pin"), rootViewController: MainViewController())
+    let myPage = tabBarNavigationController(unselectedImage: #imageLiteral(resourceName: "mypage-pin"), selectedImage: #imageLiteral(resourceName: "mypage-pin"), rootViewController: myPageVC())
 
       viewControllers = [map, add, myPage]
   }
