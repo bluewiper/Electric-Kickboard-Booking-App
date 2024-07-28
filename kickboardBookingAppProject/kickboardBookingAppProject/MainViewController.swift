@@ -51,6 +51,7 @@ extension MainViewController {
     }
     
     private func setNavigation() {
+//        title = "지도"
         navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20, weight: .bold),
             NSAttributedString.Key.foregroundColor: UIColor.black

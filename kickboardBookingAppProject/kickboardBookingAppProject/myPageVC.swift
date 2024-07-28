@@ -33,8 +33,6 @@ struct UserInfo {
 // 테이블 뷰 메뉴아이템 데이터
 enum MenuItem: String, CaseIterable {
     case history = "이용 내역"
-    case updateProfile = "회원정보 변경"
-    case updateLicense = "운전면허증(업데이트 예정)"
     case logout = "로그아웃"
 }
 
@@ -254,13 +252,21 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let loginVC = LoginViewController()
         let selectedItem = menuItems[indexPath.row]
+        
         if selectedItem == .history {
             navigationController?.pushViewController(HistoryVC(), animated: true)
+            
+        } else if selectedItem == .logout {
+            
+            if let navigationController = navigationController {
+                navigationController.setViewControllers([loginVC], animated: true)
+            } else {
+                print("로그아웃 전환 실패")
+            }
+            // D. 로그인 정보 초기화 메서드 필요
         }
-//        if selectedItem == .logout {
-//            navigationController?.popToViewController(LoginViewController(), animated: true)
-//        }
         // D. 마이페이지 목록 선택 후 복귀 했을 때 선택 전으로 초기화
         tableView.deselectRow(at: indexPath, animated: true)
     }
