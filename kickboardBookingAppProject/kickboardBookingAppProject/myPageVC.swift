@@ -260,12 +260,17 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             
         } else if selectedItem == .logout {
             
+            // D. 자동 로그인 설정만 비활성화하는 메서드 호출 
+            disableAutoLogin()
+            
+            loginVC.hidesBottomBarWhenPushed = true  // D. 로그아웃 시 탭바를 숨기는 메서드
+            
             if let navigationController = navigationController {
                 navigationController.setViewControllers([loginVC], animated: true)
+                
             } else {
                 print("로그아웃 전환 실패")
             }
-            // D. 로그인 정보 초기화 메서드 필요
         }
         // D. 마이페이지 목록 선택 후 복귀 했을 때 선택 전으로 초기화
         tableView.deselectRow(at: indexPath, animated: true)
@@ -274,6 +279,11 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @objc func returnButtonTapped() {
         // 반납 버튼 클릭 시 동작
         print("반납 하기 버튼 클릭됨")
+    }
+    
+    // D. 자동 로그인 설정만 비활성화하는 메서드
+    private func disableAutoLogin() {
+        UserDefaults.standard.set(false, forKey: "로그인 정보 저장")
     }
     
 }
