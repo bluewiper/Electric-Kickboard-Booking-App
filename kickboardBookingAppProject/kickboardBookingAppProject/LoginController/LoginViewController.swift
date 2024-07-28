@@ -117,7 +117,9 @@ class LoginViewController: UIViewController {
     
     private func navigateToHome() {
         let homeVC = MainTabBarController()
-        navigationController?.pushViewController(homeVC, animated: true)
+        homeVC.modalPresentationStyle = .fullScreen // 전체 화면으로 표시
+        self.present(homeVC, animated: true, completion: nil)
+//        navigationController?.pushViewController(homeVC, animated: true)
     }
     
     // a. 키보드가 나타날 때 호출되는 메서드

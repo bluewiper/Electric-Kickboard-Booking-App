@@ -13,6 +13,14 @@ class MainTabBarController: UITabBarController {
     super.viewDidLoad()
     view.backgroundColor = .red
     configureController()
+      
+      // a. 네비게이션 바 숨기기
+//      navigationController?.isNavigationBarHidden = true
+      
+      // 좌측 끝 밀기 제스처 비활성화
+//      if let navigationController = self.viewControllers?.first as? UINavigationController {
+//          navigationController.interactivePopGestureRecognizer?.isEnabled = false
+//      }
   }
   // MARK: - Helpers
   func configureController() {
@@ -29,6 +37,10 @@ class MainTabBarController: UITabBarController {
     nav.tabBarItem.image = unselectedImage
     nav.tabBarItem.selectedImage = selectedImage
     nav.navigationBar.tintColor = .systemBlue
+      
+      // 좌측 끝 밀기 제스처 비활성화
+      nav.interactivePopGestureRecognizer?.isEnabled = false
+      
     return nav
   }
 }
