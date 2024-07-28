@@ -101,7 +101,7 @@ class RegisterModalViewController: UIViewController {
         codeLabel.textAlignment = .center
         stackView2.addArrangedSubview(codeLabel)
         
-        let codeTextField = UITextField()
+//        let codeTextField = UITextField()
         let codePlaceholder = NSAttributedString(string: "랜덤 코드: \(RegisterModalViewController.randomCodeName())", attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
         codeTextField.attributedPlaceholder = codePlaceholder
         codeTextField.borderStyle = .roundedRect
