@@ -26,6 +26,7 @@ class HistoryVC: UIViewController {
     var sectionIsExpanded: [Bool] = []
     
     var histories: [TestHistory] = []
+    var filteredHistories: [TestHistory] = [] // 필터링된 내역을 저장할 배열
     
     // D. 이용 기간 단위를 보여줄 세그먼트 바
     lazy var periodSC: UISegmentedControl = {
@@ -101,7 +102,7 @@ class HistoryVC: UIViewController {
         setUpLayout()
         setCurrentDate()
         updateUI()
-
+        
     }
     
     func setupView() {
@@ -114,24 +115,26 @@ class HistoryVC: UIViewController {
     }
     
     func setupTableView() {
+        histories.append(TestHistory(dateString: "06월 19일", kickboardInfo: "TL1485", ridingTime: "25분", distance: "3.4km", payment: "2500원"))
+        histories.append(TestHistory(dateString: "06월 30일", kickboardInfo: "CI1480", ridingTime: "40분", distance: "5.2km", payment: "4000원"))
+        histories.append(TestHistory(dateString: "07월 08일", kickboardInfo: "TL1485", ridingTime: "35분", distance: "4.7km", payment: "3500원"))
+        histories.append(TestHistory(dateString: "07월 12일", kickboardInfo: "ZE1361", ridingTime: "50분", distance: "6.5km", payment: "5000원"))
+        histories.append(TestHistory(dateString: "07월 17일", kickboardInfo: "QJ0831", ridingTime: "20분", distance: "2.8km", payment: "2000원"))
+        histories.append(TestHistory(dateString: "07월 19일", kickboardInfo: "FD0215", ridingTime: "45분", distance: "6.0km", payment: "4500원"))
+        histories.append(TestHistory(dateString: "07월 22일", kickboardInfo: "QJ0831", ridingTime: "30분", distance: "4.0km", payment: "3000원"))
+        histories.append(TestHistory(dateString: "07월 24일", kickboardInfo: "FD0215", ridingTime: "55분", distance: "7.1km", payment: "5500원"))
+        histories.append(TestHistory(dateString: "07월 27일", kickboardInfo: "CI1480", ridingTime: "15분", distance: "2.0km", payment: "1500원"))
+        histories.append(TestHistory(dateString: "07월 29일", kickboardInfo: "FD0215", ridingTime: "60분", distance: "8.0km", payment: "6000원"))
         
-        // D. 더미데이터로 4개 넣어놓음
-        histories.append(TestHistory(dateString: "07월 24일", kickboardInfo: "킥보드 1", ridingTime: "30분", distance: "5km", payment: "2000원"))
-        histories.append(TestHistory(dateString: "07월 25일", kickboardInfo: "킥보드 2", ridingTime: "30분", distance: "5km", payment: "2000원"))
-        histories.append(TestHistory(dateString: "07월 26일", kickboardInfo: "킥보드 3", ridingTime: "60분", distance: "10km", payment: "4000원"))
-        histories.append(TestHistory(dateString: "08월 10일", kickboardInfo: "킥보드 4", ridingTime: "10분", distance: "2km", payment: "1000원"))
+        filteredHistories = histories // 초기값으로 전체 histories 할당
         
-        // D. 테이블 뷰 델리게이트와 데이터 소스
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(CustomSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: CustomSectionHeaderView.headerViewID)
         
-        // D. 헤더 : 초기 섹션 상태 설정 (모든 섹션이 접혀있지 않은 상태)
         sectionIsExpanded = Array(repeating: false, count: numberOfSections(in: tableView))
         
-        // D. 테이블 뷰 및 버튼 뷰 생성
         view.addSubview(tableView)
-        
     }
     
     func setUpLayout() {
@@ -197,15 +200,20 @@ class HistoryVC: UIViewController {
         let currentDate = Date()
         
         if let pastDate = calendar.date(byAdding: .day, value: -days, to: currentDate) {
-            
             let pastDateString = dateFormatter.string(from: pastDate)
             let currentDateString = dateFormatter.string(from: currentDate)
-            
-            // D. 텍스트 뷰 텍스트 업데이트
             periodTV.text = "\(pastDateString) ~ \(currentDateString)"
             
+            filteredHistories = histories.filter { history in
+                if let historyDate = dateFormatter.date(from: "2024-" + history.dateString.replacingOccurrences(of: "월", with: "-").replacingOccurrences(of: "일", with: "")) {
+                    return historyDate >= pastDate && historyDate <= currentDate
+                }
+                return false
+            }
+            
+            sectionIsExpanded = Array(repeating: false, count: filteredHistories.count)
+            tableView.reloadData()
         }
-        
     }
     
     @objc func segmentChanged(_ sender: UISegmentedControl) {
@@ -256,47 +264,31 @@ class HistoryVC: UIViewController {
     }
     
 }
-
 extension HistoryVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sectionIsExpanded[section] ? 1 : 0 // D. 임의의 수
+        return sectionIsExpanded[section] ? 1 : 0
     }
     
-    // D. 헤더 관련
     func numberOfSections(in tableView: UITableView) -> Int {
-        return histories.count // <- 4개
+        return filteredHistories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath) as! HistoryCell
-        
-        // D. cell에 보여질 history 데이터를 가져오기
-        let history = histories[indexPath.section]
-        
-        // D. history 정보를 가지고 cell의 내용을 채워줌
-        cell.kickboardInfo.text = history.kickboardInfo
-        
+        let history = filteredHistories[indexPath.section]
+        cell.configure(with: history)
         return cell
     }
     
-    // D. 커스텀 헤더뷰
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CustomSectionHeaderView.headerViewID) as? CustomSectionHeaderView else {
             return nil
         }
         
-        // D. histories 에 section 번째의 데이터를 가지고 와서 history 변수에 저장
-        let history = histories[section]
-        
-        // D. 커스텀 헤더 뷰 제목
-        // D. history 에는 dateString, kickboardInfo 가 들어가 있음
-        // D. history에 있는 dateString을 header Title에 대입
+        let history = filteredHistories[section]
         headerView.headerTitle.text = history.dateString
-        
-        // D. 헤더 확장에 따라 화살표 이미지 변경
         headerView.updateHeader(isExpanded: sectionIsExpanded[section])
         
-        // D. 헤더뷰를 위해 탭했을 경우 제스처 인식
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleHeaderTap(_:)))
         headerView.addGestureRecognizer(tapGestureRecognizer)
         headerView.tag = section
@@ -304,18 +296,78 @@ extension HistoryVC: UITableViewDataSource, UITableViewDelegate {
         return headerView
     }
     
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        40
+        return 40
     }
     
     @objc func handleHeaderTap(_ sender: UITapGestureRecognizer) {
         guard let section = sender.view?.tag else { return }
         
-        // D. 섹션의 접힘 상태를 반전
         sectionIsExpanded[section].toggle()
         
-        // D. 테이블 뷰 업데이트
         tableView.reloadSections(IndexSet(integer: section), with: .automatic)
     }
 }
+
+//extension HistoryVC: UITableViewDataSource, UITableViewDelegate {
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return sectionIsExpanded[section] ? 1 : 0 // D. 임의의 수
+//    }
+//
+//    // D. 헤더 관련
+//    func numberOfSections(in tableView: UITableView) -> Int {
+//        return histories.count // <- 4개
+//    }
+//
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath) as! HistoryCell
+//
+//        // D. cell에 보여질 history 데이터를 가져오기
+//        let history = histories[indexPath.section]
+//
+//        // D. history 정보를 가지고 cell의 내용을 채워줌
+//        cell.kickboardInfo.text = history.kickboardInfo
+//
+//        return cell
+//    }
+//
+//    // D. 커스텀 헤더뷰
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CustomSectionHeaderView.headerViewID) as? CustomSectionHeaderView else {
+//            return nil
+//        }
+//
+//        // D. histories 에 section 번째의 데이터를 가지고 와서 history 변수에 저장
+//        let history = histories[section]
+//
+//        // D. 커스텀 헤더 뷰 제목
+//        // D. history 에는 dateString, kickboardInfo 가 들어가 있음
+//        // D. history에 있는 dateString을 header Title에 대입
+//        headerView.headerTitle.text = history.dateString
+//
+//        // D. 헤더 확장에 따라 화살표 이미지 변경
+//        headerView.updateHeader(isExpanded: sectionIsExpanded[section])
+//
+//        // D. 헤더뷰를 위해 탭했을 경우 제스처 인식
+//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleHeaderTap(_:)))
+//        headerView.addGestureRecognizer(tapGestureRecognizer)
+//        headerView.tag = section
+//
+//        return headerView
+//    }
+//
+//
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        40
+//    }
+//
+//    @objc func handleHeaderTap(_ sender: UITapGestureRecognizer) {
+//        guard let section = sender.view?.tag else { return }
+//
+//        // D. 섹션의 접힘 상태를 반전
+//        sectionIsExpanded[section].toggle()
+//
+//        // D. 테이블 뷰 업데이트
+//        tableView.reloadSections(IndexSet(integer: section), with: .automatic)
+//    }
+//}
