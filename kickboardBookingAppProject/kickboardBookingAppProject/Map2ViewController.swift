@@ -217,6 +217,14 @@ class Map2ViewController: UIViewController {
 //        poi?.show()
 //    }
     
+    @objc func moveToPointLocation() {
+        let lo = 127.028406
+        let la = 37.194402
+        let mapView = mapController?.getView("mapview") as! KakaoMap
+        let cameraUpdate: CameraUpdate = CameraUpdate.make(target: MapPoint(longitude: lo, latitude: la), zoomLevel: 15, mapView: mapView)
+        mapView.animateCamera(cameraUpdate: cameraUpdate, options: CameraAnimationOptions(autoElevation: true, consecutive: true, durationInMillis: 500))
+    }
+
     func createPoiStyle(viewName: String) {
         guard let mapView = mapController?.getView(viewName) as? KakaoMap else {
             return
@@ -310,6 +318,7 @@ extension Map2ViewController: MapControllerDelegate {
         }
         
         mapView.viewRect = mapContainer.bounds
+        moveToPointLocation()
         viewInit(viewName: viewName)
 
     }
