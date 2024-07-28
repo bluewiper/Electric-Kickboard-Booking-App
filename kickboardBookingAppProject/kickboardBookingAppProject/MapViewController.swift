@@ -40,6 +40,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     // 스타일 정보를 저장하기 위한 Dictionary
     private var poiStyles: [Poi: String] = [:]
     
+    private var _locationUpdatedInitially = false
     
     // 주소 검색바
     private var searchBar: UISearchBar = {
@@ -66,6 +67,8 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         label.backgroundColor = .lightGray
         label.text = "이용상태: X"
         label.textAlignment = .center
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 20 
         return label
     }()
     
@@ -133,20 +136,17 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     }
     
     deinit {
-        mapController?.pauseEngine()
-        mapController?.resetEngine()
+//        mapController?.pauseEngine()
+//        mapController?.resetEngine()
     }
     
     // MARK: - viewDidLoad
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         addViews()
         
         navigationController?.navigationBar.isHidden = true
-    
         
         // Location Manager 설정
         locationManager.delegate = self
@@ -187,16 +187,23 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             addViews()
         }
         mapController?.activateEngine()
-        
+
         // 지도 초기화 완료 후 위치 정보 가져오기
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.updateLocationToCurrentPosition()
+        if !_locationUpdatedInitially {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.updateLocationToCurrentPosition()
+                self._locationUpdatedInitially = true
+            }
         }
     }
     //a. 변경사항
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         mapController?.pauseEngine()
+
+        _appear = false
+//        mapController?.pauseEngine()  //렌더링 중지.
+
     }
     // 이전코드
 //    override func viewWillDisappear(_ animated: Bool) {
@@ -208,6 +215,10 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         removeObservers()
+
+//        mapController?.resetEngine()
+        //엔진 정지. 추가되었던 ViewBase들이 삭제된다.
+        
     }
     // 이전코드.
 //    override func viewDidDisappear(_ animated: Bool) {
@@ -290,7 +301,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         
         returnButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(80)
+            $0.bottom.equalToSuperview().inset(100)
             $0.width.equalTo(120)
             $0.height.equalTo(50)
         }
@@ -838,4 +849,3 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     }
     
 }
-
