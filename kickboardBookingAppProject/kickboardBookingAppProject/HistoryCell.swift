@@ -33,7 +33,7 @@ class HistoryCell: UITableViewCell {
     // D. 컨테이너 뷰에 추가할 vertical StackView
     let periodDetailVStackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.backgroundColor = .systemPink // 디버깅용
+        /*stackView.backgroundColor = .systemPink*/ // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
         return stackView
@@ -42,7 +42,7 @@ class HistoryCell: UITableViewCell {
     // D. vertical StackView에 넣을 horizontal StackView 1 : 킥보드 정보
     let periodDetailHStackView1: UIStackView = {
         let stackView = UIStackView()
-        stackView.backgroundColor = .green // 디버깅용
+        /*stackView.backgroundColor = .green*/ // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
         return stackView
@@ -73,7 +73,7 @@ class HistoryCell: UITableViewCell {
     // D. vertical StackView에 넣을 horizontal StackView 2 : 탑승 시간
     let periodDetailHStackView2: UIStackView = {
         let stackView = UIStackView()
-        stackView.backgroundColor = .yellow // 디버깅용
+        /*stackView.backgroundColor = .yellow*/ // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -105,7 +105,7 @@ class HistoryCell: UITableViewCell {
     // D. vertical StackView에 넣을 horizontal StackView 3 : 탑승 거리
     let periodDetailHStackView3: UIStackView = {
         let stackView = UIStackView()
-        stackView.backgroundColor = .orange // 디버깅용
+        /*stackView.backgroundColor = .orange*/ // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -148,7 +148,7 @@ class HistoryCell: UITableViewCell {
     // D. 컨테이너 뷰에 추가할 vertical StackView 2
     let paymentDetailVStackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.backgroundColor = .systemPink // 디버깅용
+        /*stackView.backgroundColor = .systemPink*/ // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -158,7 +158,7 @@ class HistoryCell: UITableViewCell {
     // D. vertical StackView2에 넣을 horizontal StackView 1 : 결제 내역
     let paymentHStackView1: UIStackView = {
         let stackView = UIStackView()
-        stackView.backgroundColor = .red // 디버깅용
+        /*stackView.backgroundColor = .red*/ // 디버깅용
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
