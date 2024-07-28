@@ -98,9 +98,13 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         return button
     }()
     
+    let longX = 127.0678
+    let latitudeY = 37.2040
+
+    // a.수정코드
     func addViews() {
         // KakaoMap을 추가하기 위한 viewInfo를 생성합니다.
-        let defaultPosition: MapPoint = MapPoint(longitude: 127.0678, latitude: 37.2040) // 기본 위치는 설정하지만 사용하지 않을 예정입니다.
+        let defaultPosition: MapPoint = MapPoint(longitude: longX , latitude: latitudeY) // 기본 위치는 설정하지만 사용하지 않을 예정입니다.
         let mapviewInfo: MapviewInfo = MapviewInfo(viewName: "mapview", viewInfoName: "map", defaultPosition: defaultPosition, defaultLevel: 17)
         
         mapContainer = mapView
