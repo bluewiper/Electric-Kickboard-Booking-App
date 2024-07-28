@@ -7,12 +7,14 @@
 
 import UIKit
 
-class MainTabBarController: UITabBarController {
+class MainTabBarController: UITabBarController/* UITabBarControllerDelegate*/ {
   // MARK: - LifeCycle
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .red
     configureController()
+    // a. 추가한 사항 - 위쪽에 델리게이트 선언합 UITabBarControllerDelegate
+//    delegate = self
       
   }
   // MARK: - Helpers
@@ -36,4 +38,18 @@ class MainTabBarController: UITabBarController {
       
     return nav
   }
+    // a.추가 사항 UITabBarControllerDelegate 메서드
+//    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+//        // add 탭을 선택했을 때 RegisterModalViewController 표시
+//        if let navController = viewController as? UINavigationController,
+//           navController.viewControllers.first is MainViewController {
+//            let registerVC = RegisterModalViewController()
+//            registerVC.modalPresentationStyle = .pageSheet
+//            if let sheet = registerVC.sheetPresentationController {
+//                sheet.detents = [.medium(), .large()]
+//                sheet.preferredCornerRadius = 20
+//            }
+//            navController.present(registerVC, animated: true, completion: nil)
+//        }
+//    }
 }
