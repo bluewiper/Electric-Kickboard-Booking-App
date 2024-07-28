@@ -2,8 +2,6 @@
   "images" : [
     {
       "filename" : "add-pin.png",
-      "filename" : "plus-circle.png",
- main:kickboardBookingAppProject/kickboardBookingAppProject/Assets.xcassets/pluscircle.imageset/Contents.json
       "idiom" : "universal",
       "scale" : "1x"
     },
