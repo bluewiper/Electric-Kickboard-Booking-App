@@ -258,6 +258,9 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         if selectedItem == .history {
             navigationController?.pushViewController(HistoryVC(), animated: true)
         }
+//        if selectedItem == .logout {
+//            navigationController?.popToViewController(LoginViewController(), animated: true)
+//        }
         // D. 마이페이지 목록 선택 후 복귀 했을 때 선택 전으로 초기화
         tableView.deselectRow(at: indexPath, animated: true)
     }
