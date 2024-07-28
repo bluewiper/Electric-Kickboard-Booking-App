@@ -683,7 +683,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             print("POI layer is nil")
             return
         }
-        
+
         let uniquePoiID = UUID().uuidString
         let options = PoiOptions(styleID: "randomPoi", poiID: uniquePoiID)
         if let poi = layer.addPoi(option: options, at: position) {
@@ -695,6 +695,34 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             poiIDs[poi] = uniquePoiID // ID 저장
             print("\(kickboardName) POI added at \(coordinate.latitude), \(coordinate.longitude)") // 로그 출력
             poi.show()
+            
+            // 랜덤 ID 생성
+            let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            let randomLetters = String((0..<2).map { _ in letters.randomElement()! })
+            let randomNumbers = (0..<4).map { _ in String(Int.random(in: 0...9)) }.joined()
+            let randomID = randomLetters + randomNumbers
+
+            // 랜덤 배터리 생성
+            let randomBattery = "\(Int.random(in: 1...100))%"
+
+            // 랜덤 요금 생성
+            let fees = ["50원", "100원", "150원", "200원"]
+            let randomFee = fees.randomElement()!
+
+            // Core Data에 저장
+            CoreDataHelper.shared.saveKickboard(
+                id: randomID,
+                latitude: coordinate.latitude,
+                longitude: coordinate.longitude,
+                battery: randomBattery, // 예시로 100% 배터리를 사용
+                fee: randomFee     // 예시로 100원을 사용
+            )
+            
+            // 저장된 킥보드 데이터를 가져와 출력
+            let kickboards = CoreDataHelper.shared.fetchAllKickboards()
+            for kickboard in kickboards {
+                print("킥보드 등록 완료 - 위도 \(kickboard.latitude), 경도 \(kickboard.longitude), 코드 \(kickboard.id ?? ""), 배터리 \(kickboard.battery ?? ""), 요금 \(kickboard.fee ?? "")")
+            }
         } else {
             print("Failed to add random POI")
         }
