@@ -98,8 +98,8 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         return button
     }()
     
-    let longX = 127.0678
-    let latitudeY = 37.2040
+    let longX = 127.028406
+    let latitudeY = 37.194402
     
     // a.수정코드
     func addViews() {
@@ -343,11 +343,9 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         createPoiStyle()
         createLabelLayer()
         
-        // 지도 초기화 완료 후 위치 정보 가져오기
         updateLocationToCurrentPosition()
         
-        // 킥보드 데이터 불러와서 핀 생성
-        addKickboardPins()
+        addKickboardPins() // 킥보드 데이터 불러와서 핀 생성
     }
     
     
@@ -619,12 +617,9 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         labelManager.addPoiStyle(searchResultPoiStyle)
         
         // 랜덤 POI 스타일 정의
-        let randomPoiImage = UIImage(systemName: "bicycle.circle.fill")
-        guard let randomPoiIcon = randomPoiImage?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal) else {
-            print("Failed to create random POI icon") // 로그 추가
-            return
-        }
-        let randomPoiIconStyle = PoiIconStyle(symbol: randomPoiIcon, anchorPoint: CGPoint(x: 0.5, y: 1.0))
+        let randomPoiImage = #imageLiteral(resourceName: "marker")
+        let randomPoiIcon = randomPoiImage
+        let randomPoiIconStyle = PoiIconStyle(symbol: randomPoiIcon, anchorPoint: CGPoint(x: 0.5, y: 0.5))
         let randomPoiPerLevelStyle = PerLevelPoiStyle(iconStyle: randomPoiIconStyle, level: 0)
         let randomPoiStyle = PoiStyle(styleID: "randomPoi", styles: [randomPoiPerLevelStyle])
         labelManager.addPoiStyle(randomPoiStyle)
@@ -658,6 +653,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             print("Failed to add current location POI")
         }
     }
+    
     
     func createSearchResultPoi(at position: MapPoint) {
         guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
@@ -825,18 +821,20 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     }
     
     private func showPOIAlert(for poi: Poi) {
-        guard let poiName = poiNames[poi] else { return }
+        guard let poiName = poiNames[poi], let kickboardID = poiIDs[poi] else { return }
         let alert = UIAlertController(title: poiName, message: "대여하시겠습니까?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "예", style: .default, handler: { _ in
             self.isKickboardInUse = true
             self.rentedKickboard = poi // 대여 중인 킥보드 저장
             poi.hide() // 대여 중인 킥보드 숨기기
+            self.updateRentalStatus(isInUse: true, kickboardID: kickboardID)
             self.updateKickboardUsageStatus()
+            NotificationCenter.default.post(name: NSNotification.Name("KickboardStatusChanged"), object: nil)
         }))
         alert.addAction(UIAlertAction(title: "아니오", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
-    
+
     @objc private func returnButtonTapped() {
         let alert = UIAlertController(title: "반납 완료", message: "반납이 완료되었습니다.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "확인", style: .default, handler: { _ in
@@ -846,7 +844,9 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
                 self.movePoiToMapCenter(poi: rentedKickboard) // POI를 카메라 정중앙으로 이동
                 self.rentedKickboard = nil // 대여 중인 킥보드 초기화
             }
+            self.updateRentalStatus(isInUse: false)
             self.updateKickboardUsageStatus()
+            NotificationCenter.default.post(name: NSNotification.Name("KickboardStatusChanged"), object: nil)
         }))
         present(alert, animated: true, completion: nil)
     }
@@ -882,7 +882,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     @objc private func handleMapTap(_ sender: UITapGestureRecognizer) {
         let point = sender.location(in: mapView)
         if let mapPoint = getPosition(point) {
-            if let nearestPOI = touchedPOI(mapPoint.wgsCoord, 0.0001) { // 감지 범위를 줄임
+            if let nearestPOI = touchedPOI(mapPoint.wgsCoord, 0.0002) { // 감지 범위를 줄임
                 poiTouched(nearestPOI)
             }
         }
@@ -923,4 +923,16 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         return nil
     }
     
+}
+extension MapViewController {
+    func updateRentalStatus(isInUse: Bool, kickboardID: String? = nil) {
+        UserDefaults.standard.set(isInUse, forKey: "isKickboardInUse")
+        UserDefaults.standard.set(kickboardID, forKey: "rentedKickboardID")
+    }
+
+    func getRentalStatus() -> (isInUse: Bool, kickboardID: String?) {
+        let isInUse = UserDefaults.standard.bool(forKey: "isKickboardInUse")
+        let kickboardID = UserDefaults.standard.string(forKey: "rentedKickboardID")
+        return (isInUse, kickboardID)
+    }
 }

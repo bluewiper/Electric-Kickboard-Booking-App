@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0421FE512C4FC34B0006E16E /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 0421FE502C4FC34B0006E16E /* KakaoMapsSDK-SPM */; };
-		0421FEA42C5613A50006E16E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421FE4D2C4FAB200006E16E /* MapViewController.swift */; };
 		0421FEA22C5612980006E16E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421FE4D2C4FAB200006E16E /* MapViewController.swift */; };
+		0421FEA42C5613A50006E16E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0421FE4D2C4FAB200006E16E /* MapViewController.swift */; };
 		2324D5F92C4E8B4600F3D47B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5F82C4E8B4600F3D47B /* AppDelegate.swift */; };
 		2324D5FB2C4E8B4600F3D47B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FA2C4E8B4600F3D47B /* SceneDelegate.swift */; };
 		2324D5FD2C4E8B4600F3D47B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324D5FC2C4E8B4600F3D47B /* ViewController.swift */; };

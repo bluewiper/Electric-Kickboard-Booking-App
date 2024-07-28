@@ -116,11 +116,33 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }()
     
     // 테이블 뷰 메뉴 아이템
-      let menuItems: [MenuItem] = MenuItem.allCases
+    let menuItems: [MenuItem] = MenuItem.allCases
+    
+    //    override func viewDidLoad() {
+    //        super.viewDidLoad()
+    //        // Do any additional setup after loading the view.
+    //
+    //        view.backgroundColor = .white
+    //
+    //        // D. 뷰 생성
+    //        view.addSubview(greetingLabel)
+    //
+    //        view.addSubview(containerView)
+    //        containerView.addSubview(statusLabel)
+    //        containerView.addSubview(centerLabel)
+    //        containerView.addSubview(timeTitleLabel)
+    //        containerView.addSubview(timeLabel)
+    //        containerView.addSubview(returnButton)
+    //
+    //        view.addSubview(tableView)
+    //
+    //        setUpLayout()
+    //        updateUI()
+    //        setUpTableView()
+    //    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         
         view.backgroundColor = .white
         
@@ -137,8 +159,25 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         view.addSubview(tableView)
         
         setUpLayout()
-        updateUI()
         setUpTableView()
+        updateRentalStatusFromMapView()
+        updateUI()
+        
+        // 알림 등록
+        NotificationCenter.default.addObserver(self, selector: #selector(updateRentalStatusFromMapView), name: NSNotification.Name("KickboardStatusChanged"), object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name("KickboardStatusChanged"), object: nil)
+    }
+
+ 
+    
+    @objc func updateRentalStatusFromMapView() {
+        let rentalStatus = MapViewController().getRentalStatus()
+        user.isUsingScooter = rentalStatus.isInUse
+        user.kickboardCode = rentalStatus.kickboardID ?? ""
+        updateUI()
     }
     
     // D. 마이페이지의 첫 번째 페이지 제약 조건
@@ -202,7 +241,6 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // D. 이용 여부에 따른 라벨 및 버튼 텍스트 업데이트하는 메서드
     func updateUI() {
-        
         if user.isUsingScooter {
             greetingLabel.text = "\(user.nickname)님\n헬멧을 꼭 써주세요!"
             statusLabel.text = "\(user.kickboardCode)호 이용중"
@@ -248,8 +286,8 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            60
-        }
+        60
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let loginVC = LoginViewController()
@@ -260,7 +298,7 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             
         } else if selectedItem == .logout {
             
-            // D. 자동 로그인 설정만 비활성화하는 메서드 호출 
+            // D. 자동 로그인 설정만 비활성화하는 메서드 호출
             disableAutoLogin()
             
             loginVC.hidesBottomBarWhenPushed = true  // D. 로그아웃 시 탭바를 숨기는 메서드
@@ -278,6 +316,8 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @objc func returnButtonTapped() {
         // 반납 버튼 클릭 시 동작
+        
+        navigationController?.setViewControllers([MainViewController()], animated: true)
         print("반납 하기 버튼 클릭됨")
     }
     

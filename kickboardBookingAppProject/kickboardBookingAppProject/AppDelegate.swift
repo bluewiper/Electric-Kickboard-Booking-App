@@ -15,7 +15,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         SDKInitializer.InitSDK(appKey: "fee1b2fd7185bc9d8c9c433b337417a7")
         
+        preloadKickboardData() // 킥보드 데이터 미리 저장
+        
         return true
+    }
+
+    private func preloadKickboardData() {
+        let kickboardCount = CoreDataHelper.shared.fetchAllKickboards().count
+        guard kickboardCount == 0 else { return }
+        
+        let kickboards = [
+            (id: "TL1485", latitude: 37.190159098980295, longitude: 127.02760813777273, battery: "40%", fee: "150원"),
+            (id: "CI1480", latitude: 37.19763319911881, longitude: 127.03178416256846, battery: "1%", fee: "100원"),
+            (id: "GX1230", latitude: 37.19222600470535, longitude: 127.02831125109035, battery: "50%", fee: "100원"),
+            (id: "ZE1361", latitude: 37.195778081540524, longitude: 127.0267833891205, battery: "31%", fee: "200원"),
+            (id: "QJ0831", latitude: 37.19426407105903, longitude: 127.03296812994411, battery: "98%", fee: "200원"),
+            (id: "JV7002", latitude: 37.198317720379, longitude: 127.03212377940471, battery: "34%", fee: "100원"),
+            (id: "XZ4121", latitude: 37.19622015358115, longitude: 127.03236718469942, battery: "46%", fee: "50원"),
+            (id: "FD0215", latitude: 37.19277343059716, longitude: 127.02923154383885, battery: "59%", fee: "200원"),
+            (id: "GQ8889", latitude: 37.19722228616542, longitude: 127.03022887525024, battery: "1%", fee: "200원"),
+            (id: "UO8278", latitude: 37.1962730652396, longitude: 127.02699534687916, battery: "65%", fee: "150원")
+        ]
+
+        for kickboard in kickboards {
+            CoreDataHelper.shared.saveKickboard(
+                id: kickboard.id,
+                latitude: kickboard.latitude,
+                longitude: kickboard.longitude,
+                battery: kickboard.battery,
+                fee: kickboard.fee
+            )
+        }
     }
 
     // MARK: UISceneSession Lifecycle
