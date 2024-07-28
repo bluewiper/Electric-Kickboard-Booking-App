@@ -260,8 +260,11 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             
         } else if selectedItem == .logout {
             
+            loginVC.hidesBottomBarWhenPushed = true  // D. 로그아웃 시 탭바를 숨기는 메서드
+            
             if let navigationController = navigationController {
                 navigationController.setViewControllers([loginVC], animated: true)
+                
             } else {
                 print("로그아웃 전환 실패")
             }
