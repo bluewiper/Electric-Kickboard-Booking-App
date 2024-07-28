@@ -10,6 +10,7 @@ import SnapKit
 
 class Map2ViewController: UIViewController {
     
+    
     static let defaultViewName: String = "mapview"
     
     //a. 수정된코드
@@ -42,12 +43,12 @@ class Map2ViewController: UIViewController {
         mapContainer?.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-
+        
         mapController = KMController(viewContainer: mapContainer!)
         mapController?.delegate = self
-//        
-//        let currentLocation = CLLocationCoordinate2D(latitude: 37.402001, longitude: 127.108678)
-//        addCurrentLocationMarker(at: currentLocation)
+        //
+        //        let currentLocation = CLLocationCoordinate2D(latitude: 37.402001, longitude: 127.108678)
+        //        addCurrentLocationMarker(at: currentLocation)
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         mapContainer?.addGestureRecognizer(longPressGesture)
@@ -121,7 +122,7 @@ class Map2ViewController: UIViewController {
         createLabelLayer(viewName: viewName)
         createPoiStyle(viewName: viewName)
         // a. 주석처리
-//        createPoi(viewName: viewName)
+        //        createPoi(viewName: viewName)
     }
     
     func addObservers() {
@@ -207,36 +208,36 @@ class Map2ViewController: UIViewController {
         present(modalVC, animated: true, completion: nil)
     }
     
-//    func addCurrentLocationMarker(at location: CLLocationCoordinate2D) {
-//        guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
-//            return
-//        }
-//        let mapPoint = MapPoint(longitude: location.longitude, latitude: location.latitude)
-//        let labelManager = mapView.getLabelManager()
-//        guard let layer = labelManager.getLabelLayer(layerID: "PoiLayer") else {
-//            return
-//        }
-//        let poiOption = PoiOptions(styleID: "currentLocation")
-//        poiOption.rank = 0
-//        poiOption.clickable = true
-//        let poi = layer.addPoi(option: poiOption, at: mapPoint, callback: { _ in
-//            print("Current location POI clicked")
-//        })
-//        poi?.show()
-//    }
+    //    func addCurrentLocationMarker(at location: CLLocationCoordinate2D) {
+    //        guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
+    //            return
+    //        }
+    //        let mapPoint = MapPoint(longitude: location.longitude, latitude: location.latitude)
+    //        let labelManager = mapView.getLabelManager()
+    //        guard let layer = labelManager.getLabelLayer(layerID: "PoiLayer") else {
+    //            return
+    //        }
+    //        let poiOption = PoiOptions(styleID: "currentLocation")
+    //        poiOption.rank = 0
+    //        poiOption.clickable = true
+    //        let poi = layer.addPoi(option: poiOption, at: mapPoint, callback: { _ in
+    //            print("Current location POI clicked")
+    //        })
+    //        poi?.show()
+    //    }
     
     @objc func moveToPointLocation() {
         let lo = 127.028406
         let la = 37.194402
         let mapView = mapController?.getView("mapview") as! KakaoMap
         
-//        let cameraUpdate: CameraUpdate = CameraUpdate.make(target: MapPoint(longitude: lo, latitude: la), zoomLevel: 15, mapView: mapView)
+        //        let cameraUpdate: CameraUpdate = CameraUpdate.make(target: MapPoint(longitude: lo, latitude: la), zoomLevel: 15, mapView: mapView)
         //a. 추가 코드
         let cameraUpdate = CameraUpdate.make(target: MapPoint(longitude: lo, latitude: la), zoomLevel: 15, mapView: mapView)
         mapView.moveCamera(cameraUpdate)
-//        mapView.animateCamera(cameraUpdate: cameraUpdate, options: CameraAnimationOptions(autoElevation: true, consecutive: true, durationInMillis: 500))
+        //        mapView.animateCamera(cameraUpdate: cameraUpdate, options: CameraAnimationOptions(autoElevation: true, consecutive: true, durationInMillis: 500))
     }
-
+    
     //a. 추가코드
     func createPoiStyle(viewName: String) {
         guard let mapView = mapController?.getView(viewName) as? KakaoMap else {
@@ -250,6 +251,14 @@ class Map2ViewController: UIViewController {
         let perLevelStyle = PerLevelPoiStyle(iconStyle: icon, level: 0)
         let poiStyle = PoiStyle(styleID: "PerLevelStyle", styles: [perLevelStyle])
         labelManager.addPoiStyle(poiStyle)
+        
+        let randomPoiImage = #imageLiteral(resourceName: "marker")
+        let randomPoiIcon = randomPoiImage
+        let randomPoiIconStyle = PoiIconStyle(symbol: randomPoiIcon, anchorPoint: CGPoint(x: 0.5, y: 0.5))
+        let randomPoiPerLevelStyle = PerLevelPoiStyle(iconStyle: randomPoiIconStyle, level: 0)
+        let randomPoiStyle = PoiStyle(styleID: "randomPoi", styles: [randomPoiPerLevelStyle])
+        labelManager.addPoiStyle(randomPoiStyle)
+        print("Random POI style added successfully") // 로그 추가
     }
     //a.추가 코드
     func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
@@ -269,29 +278,59 @@ class Map2ViewController: UIViewController {
         return newImage!
     }
     
+    // MARK: - "WL 수정"
+    func addKickboardPins() {
+        let kickboards = CoreDataHelper.shared.fetchAllKickboards()
+        for kickboard in kickboards {
+            let position = MapPoint(longitude: kickboard.longitude, latitude: kickboard.latitude)
+            createKickboardPoi(at: position, id: kickboard.id ?? "", battery: kickboard.battery ?? "", fee: kickboard.fee ?? "")
+        }
+    }
+    
+    func createKickboardPoi(at position: MapPoint, id: String, battery: String, fee: String) {
+        guard let mapView = mapController?.getView(Map2ViewController.defaultViewName) as? KakaoMap else {
+            print("Map view is nil")
+            return
+        }
+        let labelManager = mapView.getLabelManager()
+        guard let layer = labelManager.getLabelLayer(layerID: "PoiLayer") else {
+            print("POI layer is nil")
+            return
+        }
+        
+        let options = PoiOptions(styleID: "randomPoi", poiID: id) // 스타일 ID 확인
+        if let poi = layer.addPoi(option: options, at: position) {
+            let coordinate = position.wgsCoord
+            poi.show()
+            print("\(id) POI added at \(coordinate.latitude), \(coordinate.longitude)") // 로그 출력
+        } else {
+            print("Failed to add kickboard POI")
+        }
+    }
+    
     
     //이전 코드
-//    func createPoiStyle(viewName: String) {
-//        guard let mapView = mapController?.getView(viewName) as? KakaoMap else {
-//            return
-//        }
-//        
-//        let labelManager = mapView.getLabelManager()
-//        let image = #imageLiteral(resourceName: "marker")
-//        let currentLocationimage = UIImage(systemName: "figure.wave")
-////        guard let currentLocationIcon = currentLocationImage?.withTintColor(.systemBlue, renderingMode: .alwyasOriginal) else {
-////            return
-////        }
-////        let currentLocationPoiIconStyle = PoiIconStyle(symbol: currentLocationIcon, AnchorPoint: CGPoint(x: 0.5, y: 1.0))
-////        let currentLocationPerLeavelStyle = PerLevelPoiStyle(iconStyle: currentLocationIcon, level: 0)
-////        let currentLocationPoiStyle = PoiStyle(styleID: "currentLocation", styles: [currentLocationPerLevelStyle])
-////        labelManager.addPoiStyle(currentLocationPoiStyle)
-//        let icon = PoiIconStyle(symbol: image, anchorPoint: CGPoint(x: 0.5, y: 1.0))
-//        let perLevelStyle = PerLevelPoiStyle(iconStyle: icon, level: 0)
-//        let poiStyle = PoiStyle(styleID: "PerLevelStyle", styles: [perLevelStyle])
-//        labelManager.addPoiStyle(poiStyle)
-//    }
-//    
+    //    func createPoiStyle(viewName: String) {
+    //        guard let mapView = mapController?.getView(viewName) as? KakaoMap else {
+    //            return
+    //        }
+    //
+    //        let labelManager = mapView.getLabelManager()
+    //        let image = #imageLiteral(resourceName: "marker")
+    //        let currentLocationimage = UIImage(systemName: "figure.wave")
+    ////        guard let currentLocationIcon = currentLocationImage?.withTintColor(.systemBlue, renderingMode: .alwyasOriginal) else {
+    ////            return
+    ////        }
+    ////        let currentLocationPoiIconStyle = PoiIconStyle(symbol: currentLocationIcon, AnchorPoint: CGPoint(x: 0.5, y: 1.0))
+    ////        let currentLocationPerLeavelStyle = PerLevelPoiStyle(iconStyle: currentLocationIcon, level: 0)
+    ////        let currentLocationPoiStyle = PoiStyle(styleID: "currentLocation", styles: [currentLocationPerLevelStyle])
+    ////        labelManager.addPoiStyle(currentLocationPoiStyle)
+    //        let icon = PoiIconStyle(symbol: image, anchorPoint: CGPoint(x: 0.5, y: 1.0))
+    //        let perLevelStyle = PerLevelPoiStyle(iconStyle: icon, level: 0)
+    //        let poiStyle = PoiStyle(styleID: "PerLevelStyle", styles: [perLevelStyle])
+    //        labelManager.addPoiStyle(poiStyle)
+    //    }
+    //
     func createLabelLayer(viewName: String) {
         guard let mapView = mapController?.getView(viewName) as? KakaoMap else { return }
         let labelManager = mapView.getLabelManager()
@@ -312,22 +351,22 @@ class Map2ViewController: UIViewController {
         })
         poi1?.show()
     }
-
+    
     
     func createPoi(viewName: String) {
         // 여기서 초기 생성 마크를 다룸. 초기 생성 마크가 없도록 주석처리.
-//        let view = mapController?.getView(viewName) as! KakaoMap
-//        let manager = view.getLabelManager()
-//        let layer = manager.getLabelLayer(layerID: "PoiLayer")
-//        let poiOption = PoiOptions(styleID: "PerLevelStyle")
-//        poiOption.rank = 0
-//        poiOption.clickable = true
-//        let poi1 = layer?.addPoi(option: poiOption, at: MapPoint(longitude: 127.108678, latitude: 37.402001), callback: {(_ poi: (Poi?)) -> Void in
-//            print("POI클릭")
-//        }
-//        )
-//        
-//        poi1?.show()
+        //        let view = mapController?.getView(viewName) as! KakaoMap
+        //        let manager = view.getLabelManager()
+        //        let layer = manager.getLabelLayer(layerID: "PoiLayer")
+        //        let poiOption = PoiOptions(styleID: "PerLevelStyle")
+        //        poiOption.rank = 0
+        //        poiOption.clickable = true
+        //        let poi1 = layer?.addPoi(option: poiOption, at: MapPoint(longitude: 127.108678, latitude: 37.402001), callback: {(_ poi: (Poi?)) -> Void in
+        //            print("POI클릭")
+        //        }
+        //        )
+        //
+        //        poi1?.show()
     }
     // a. 위치 불러오는 버튼
     func setupCurrentLocationButton() {
@@ -338,7 +377,7 @@ class Map2ViewController: UIViewController {
         currentLocationButton.backgroundColor = .lightGray
         currentLocationButton.layer.cornerRadius = 25
         currentLocationButton.tintColor = .systemBlue
-//        currentLocationButton.setTitle("현재 위치", for: .normal)
+        //        currentLocationButton.setTitle("현재 위치", for: .normal)
         currentLocationButton.addTarget(self, action: #selector(moveToCurrentLocation), for: .touchUpInside)
         view.addSubview(currentLocationButton)
         currentLocationButton.snp.makeConstraints { make in
@@ -369,21 +408,21 @@ extension Map2ViewController: KickboardRegisterDelegate {
         createMarker(viewPoint: location)
     }
     
-//    func createMarker(viewPoint: CGPoint) {
-//        let view = mapController?.getView(Map2ViewController.defaultViewName) as! KakaoMap
-//        let mapPoint = view.getPosition(viewPoint)
-//        let manager = view.getLabelManager()
-//        let layer = manager.getLabelLayer(layerID: "PoiLayer")
-//        let poiOption = PoiOptions(styleID: "PerLevelStyle")
-//        poiOption.rank = 0
-//        poiOption.clickable = true
-//        let poi1 = layer?.addPoi(option: poiOption, at: mapPoint, callback: {(_ poi: (Poi?)) -> Void in
-//            print("POI클릭")
-//        }
-//        )
-//
-//        poi1?.show()
-//    }
+    //    func createMarker(viewPoint: CGPoint) {
+    //        let view = mapController?.getView(Map2ViewController.defaultViewName) as! KakaoMap
+    //        let mapPoint = view.getPosition(viewPoint)
+    //        let manager = view.getLabelManager()
+    //        let layer = manager.getLabelLayer(layerID: "PoiLayer")
+    //        let poiOption = PoiOptions(styleID: "PerLevelStyle")
+    //        poiOption.rank = 0
+    //        poiOption.clickable = true
+    //        let poi1 = layer?.addPoi(option: poiOption, at: mapPoint, callback: {(_ poi: (Poi?)) -> Void in
+    //            print("POI클릭")
+    //        }
+    //        )
+    //
+    //        poi1?.show()
+    //    }
 }
 
 extension Map2ViewController: MapControllerDelegate {
@@ -395,7 +434,6 @@ extension Map2ViewController: MapControllerDelegate {
     }
     
     func addViewSucceeded(_ viewName: String, viewInfoName: String) {
-
         guard let mapView = mapController?.getView(viewName) as? KakaoMap else {
             print("Failed to get KakaoMap view")
             return
@@ -409,7 +447,8 @@ extension Map2ViewController: MapControllerDelegate {
         mapView.viewRect = mapContainer.bounds
         moveToPointLocation()
         viewInit(viewName: viewName)
-
+        
+        addKickboardPins() // 킥보드 데이터 불러와서 핀 생성
     }
     
     func addViewFailed(_ viewName: String, viewInfoName: String) {
