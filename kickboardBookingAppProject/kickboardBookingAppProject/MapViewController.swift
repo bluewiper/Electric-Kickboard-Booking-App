@@ -42,6 +42,8 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     
     private var _locationUpdatedInitially = false
     
+    
+    
     // 주소 검색바
     private var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -69,6 +71,20 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         label.textAlignment = .center
         label.clipsToBounds = true
         label.layer.cornerRadius = 20
+        return label
+    }()
+    
+    // 이용 시간 레이블
+    private var usageTimeLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 15)
+        label.backgroundColor = .lightGray
+        label.text = "이용 시간: 00:00"
+        label.textAlignment = .center
+        label.backgroundColor = #colorLiteral(red: 0.05629429966, green: 0.8279358745, blue: 0.3545475006, alpha: 1)
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 20
+        label.isHidden = true
         return label
     }()
     
@@ -270,6 +286,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             mapView,
             searchBar,
             isUsingLabel,
+            usageTimeLabel,
             returnButton,
             locationButton,
             tableView
@@ -299,6 +316,14 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             $0.height.equalTo(40)
         }
         
+        // 이용 시간 레이블 제약 조건 추가
+        usageTimeLabel.snp.makeConstraints {
+            $0.centerY.equalTo(isUsingLabel)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.width.equalTo(150)
+            $0.height.equalTo(40)
+        }
+        
         returnButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.bottom.equalToSuperview().inset(100)
@@ -315,6 +340,30 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         
     }
     
+    
+    private var rentalTimer: Timer?
+    private var rentalStartTime: Date?
+
+    // 타이머 시작 메서드
+    private func startRentalTimer() {
+        rentalStartTime = Date()
+        rentalTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateUsageTime), userInfo: nil, repeats: true)
+    }
+
+    // 타이머 중지 메서드
+    private func stopRentalTimer() {
+        rentalTimer?.invalidate()
+        rentalTimer = nil
+    }
+
+    // 이용 시간 업데이트 메서드
+    @objc private func updateUsageTime() {
+        guard let startTime = rentalStartTime else { return }
+        let elapsedTime = Date().timeIntervalSince(startTime)
+        let minutes = (Int(elapsedTime) % 3600) / 60
+        let seconds = Int(elapsedTime) % 60
+        usageTimeLabel.text = String(format: "이용 시간: %02d:%02d", minutes, seconds)
+    }
     
     // MARK: - 기존 addViewSucceeded
     //addView 성공 이벤트 delegate. 추가적으로 수행할 작업을 진행한다.
@@ -821,7 +870,8 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     }
     
     private func showPOIAlert(for poi: Poi) {
-        guard let poiName = poiNames[poi], let kickboardID = poiIDs[poi] else { return }
+        guard let poiName = poiNames[poi], let kickboardID = poiIDs[poi], let kickboardFeeString = poiNames[poi]?.split(separator: ",").last?.split(separator: ":").last?.trimmingCharacters(in: .whitespaces), let feePerMinute = Int(kickboardFeeString.replacingOccurrences(of: "원", with: "")) else { return }
+        
         let alert = UIAlertController(title: poiName, message: "대여하시겠습니까?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "예", style: .default, handler: { _ in
             self.isKickboardInUse = true
@@ -829,14 +879,27 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             poi.hide() // 대여 중인 킥보드 숨기기
             self.updateRentalStatus(isInUse: true, kickboardID: kickboardID)
             self.updateKickboardUsageStatus()
-            NotificationCenter.default.post(name: NSNotification.Name("KickboardStatusChanged"), object: nil)
+
+            // 타이머 시작
+            self.usageTimeLabel.isHidden = false
+            self.rentalStartTime = Date() // 대여 시작 시간 설정
+            self.startRentalTimer()
+
+            // NotificationCenter를 통해 알림 보내기
+            NotificationCenter.default.post(name: NSNotification.Name("KickboardStatusChanged"), object: nil, userInfo: ["isInUse": true, "kickboardID": kickboardID, "rentalStartTime": self.rentalStartTime!, "feePerMinute": feePerMinute])
         }))
         alert.addAction(UIAlertAction(title: "아니오", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
 
     @objc private func returnButtonTapped() {
-        let alert = UIAlertController(title: "반납 완료", message: "반납이 완료되었습니다.", preferredStyle: .alert)
+        guard let rentalStartTime = rentalStartTime, let kickboardFeeString = rentedKickboard.flatMap({ poiNames[$0]?.split(separator: ",").last?.split(separator: ":").last?.trimmingCharacters(in: .whitespaces) }), let feePerMinute = Int(kickboardFeeString.replacingOccurrences(of: "원", with: "")) else { return }
+
+        let elapsedTime = Date().timeIntervalSince(rentalStartTime)
+        let formattedTime = formattedElapsedTime(elapsedTime)
+        let fee = calculateFee(for: elapsedTime, feePerMinute: feePerMinute)
+
+        let alert = UIAlertController(title: "킥보드 반납", message: "이용 시간: \(formattedTime)\n금액: \(fee)원\n반납하시겠습니까?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "확인", style: .default, handler: { _ in
             self.isKickboardInUse = false
             if let rentedKickboard = self.rentedKickboard {
@@ -846,9 +909,29 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             }
             self.updateRentalStatus(isInUse: false)
             self.updateKickboardUsageStatus()
-            NotificationCenter.default.post(name: NSNotification.Name("KickboardStatusChanged"), object: nil)
+
+            // 타이머 중지
+            self.stopRentalTimer()
+            self.usageTimeLabel.isHidden = true
+
+            // NotificationCenter를 통해 알림 보내기
+            NotificationCenter.default.post(name: NSNotification.Name("KickboardStatusChanged"), object: nil, userInfo: ["isInUse": false, "elapsedTime": elapsedTime, "fee": fee])
         }))
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+
+    // 이용 요금 계산 메서드
+    private func calculateFee(for elapsedTime: TimeInterval, feePerMinute: Int) -> Int {
+        let totalMinutes = Int(ceil(elapsedTime / 60))
+        return totalMinutes * feePerMinute
+    }
+
+    // 경과 시간을 포맷팅하는 메서드
+    private func formattedElapsedTime(_ elapsedTime: TimeInterval) -> String {
+        let minutes = Int(elapsedTime) / 60
+        let seconds = Int(elapsedTime) % 60
+        return String(format: "%02d분 %02d초", minutes, seconds)
     }
     
     // POI를 카메라 정중앙으로 이동시키는 함수

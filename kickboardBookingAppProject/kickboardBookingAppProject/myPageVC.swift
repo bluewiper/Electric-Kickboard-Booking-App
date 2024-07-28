@@ -18,15 +18,18 @@ struct UserInfo {
     var isUsingScooter: Bool
     var kickboardCode: String
     var hasHistory: Bool
-    
-    // D. 초기화 메서드
-    init(userID: String, password: String, nickname: String, kickboardCode: String, isUsingScooter: Bool = false, hasHistory: Bool = false) {
+    var rentalStartTime: Date? // 대여 시작 시간 추가
+    var feePerMinute: Int? // 추가된 필드
+
+    init(userID: String, password: String, nickname: String, kickboardCode: String, isUsingScooter: Bool = false, hasHistory: Bool = false, rentalStartTime: Date? = nil, feePerMinute: Int? = nil) {
         self.loginID = userID
         self.password = password
         self.nickname = nickname
         self.kickboardCode = kickboardCode
         self.isUsingScooter = isUsingScooter
         self.hasHistory = hasHistory
+        self.rentalStartTime = rentalStartTime
+        self.feePerMinute = feePerMinute
     }
 }
 
@@ -37,7 +40,9 @@ enum MenuItem: String, CaseIterable {
 }
 
 // D. 더미 데이터
-var user = UserInfo(userID: "johnDoe123", password: "securePassword", nickname: "John", kickboardCode: "KFSE123", isUsingScooter: false, hasHistory: true)
+//var user = UserInfo(userID: "johnDoe123", password: "securePassword", nickname: "John", kickboardCode: "KFSE123", isUsingScooter: false, hasHistory: true)
+
+var user = UserInfo(userID: "johnDoe123", password: "securePassword", nickname: "John", kickboardCode: "KFSE123", isUsingScooter: false, hasHistory: true, rentalStartTime: nil)
 
 class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -79,21 +84,24 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         return label
     }()
     
+    // 이용시간 레이블
     let timeTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         label.numberOfLines = 0
         label.textAlignment = .right
         return label
     }()
     
+    // 이용 금액 레이블로 대체
     let timeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         label.numberOfLines = 0
         label.textAlignment = .right
+//        label.text = "이용요금"
         return label
     }()
     
@@ -164,7 +172,7 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         updateUI()
         
         // 알림 등록
-        NotificationCenter.default.addObserver(self, selector: #selector(updateRentalStatusFromMapView), name: NSNotification.Name("KickboardStatusChanged"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKickboardStatusChanged(notification:)), name: NSNotification.Name("KickboardStatusChanged"), object: nil)
     }
 
     deinit {
@@ -172,6 +180,74 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
 
  
+    @objc func handleKickboardStatusChanged(notification: Notification) {
+        if let userInfo = notification.userInfo,
+           let isInUse = userInfo["isInUse"] as? Bool {
+            user.isUsingScooter = isInUse
+            if isInUse, let kickboardID = userInfo["kickboardID"] as? String, let rentalStartTime = userInfo["rentalStartTime"] as? Date, let feePerMinute = userInfo["feePerMinute"] as? Int {
+                user.kickboardCode = kickboardID
+                user.rentalStartTime = rentalStartTime
+                user.feePerMinute = feePerMinute
+                startRentalTimer()
+            } else {
+                user.kickboardCode = ""
+                user.rentalStartTime = nil
+                user.feePerMinute = nil
+                rentalTimer?.invalidate()
+                rentalTimer = nil
+            }
+            updateUI()
+        }
+        if let userInfo = notification.userInfo,
+           let elapsedTime = userInfo["elapsedTime"] as? TimeInterval,
+           let fee = userInfo["fee"] as? Int {
+            let formattedTime = formattedElapsedTime(elapsedTime)
+            timeTitleLabel.text = "이용 시간: \(formattedTime)"
+            timeLabel.text = "이용 금액: \(fee)원"
+        }
+    }
+
+    private func calculateFee(for elapsedTime: TimeInterval) -> Int {
+        let totalMinutes = Int(ceil(elapsedTime / 60))
+        return totalMinutes * (user.feePerMinute ?? 0)
+    }
+
+    private func formattedElapsedTime(_ elapsedTime: TimeInterval) -> String {
+        let minutes = Int(elapsedTime) / 60
+        let seconds = Int(elapsedTime) % 60
+        return String(format: "%02d분 %02d초", minutes, seconds)
+    }
+    
+    private var rentalTimer: Timer?
+
+    private func startRentalTimer() {
+        rentalTimer?.invalidate()
+        rentalTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateRentalTime), userInfo: nil, repeats: true)
+    }
+
+    @objc private func updateRentalTime() {
+        guard let rentalStartTime = user.rentalStartTime else { return }
+        let elapsedTime = Date().timeIntervalSince(rentalStartTime)
+        let formattedTime = formattedElapsedTime(elapsedTime)
+        let fee = calculateFee(for: elapsedTime)
+
+        // 날짜 포맷 설정
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy년 MM월 dd일 HH시 mm분"
+        let rentalStartTimeString = dateFormatter.string(from: rentalStartTime)
+        
+        // 경과 시간 문자열 생성
+        let elapsedTimeString = String(format: "%02d분 %02d초", Int(elapsedTime) / 60, Int(elapsedTime) % 60)
+        
+        // 레이블에 표시
+        timeTitleLabel.text = "\(rentalStartTimeString) ~ \(elapsedTimeString) 이용중"
+        timeLabel.text = "이용 금액: \(fee)원"
+
+        // 1분마다 요금 업데이트
+        if Int(elapsedTime) % 60 == 0 {
+            NotificationCenter.default.post(name: NSNotification.Name("KickboardUsageUpdated"), object: nil, userInfo: ["elapsedTime": elapsedTime, "fee": fee])
+        }
+    }
     
     @objc func updateRentalStatusFromMapView() {
         let rentalStatus = MapViewController().getRentalStatus()
@@ -244,14 +320,18 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         if user.isUsingScooter {
             greetingLabel.text = "\(user.nickname)님\n헬멧을 꼭 써주세요!"
             statusLabel.text = "\(user.kickboardCode)호 이용중"
-            timeTitleLabel.text = "이용시간"
-            timeLabel.text = "2024.07.22. 18:00 26분째"
+            timeTitleLabel.text = ""
             centerLabel.text = ""
             returnButton.setTitle("반납 하기", for: .normal)
             centerLabel.isHidden = true
             statusLabel.isHidden = false
             timeTitleLabel.isHidden = false
             timeLabel.isHidden = false
+            startRentalTimer() // 타이머 시작
+            // 초기 이용 금액 설정
+            if let feePerMinute = user.feePerMinute {
+                timeLabel.text = "이용 금액: \(feePerMinute)원"
+            }
         } else {
             greetingLabel.text = "\(user.nickname)님\n오늘도 달려볼까요?"
             statusLabel.text = ""
@@ -263,6 +343,7 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             statusLabel.isHidden = true
             timeTitleLabel.isHidden = true
             timeLabel.isHidden = true
+            rentalTimer?.invalidate() // 타이머 중지
         }
     }
     
@@ -317,7 +398,9 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @objc func returnButtonTapped() {
         // 반납 버튼 클릭 시 동작
         
-        navigationController?.setViewControllers([MainViewController()], animated: true)
+        if let tabBarController = self.tabBarController {
+              tabBarController.selectedIndex = 0
+            }
         print("반납 하기 버튼 클릭됨")
     }
     
@@ -326,4 +409,8 @@ class myPageVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         UserDefaults.standard.set(false, forKey: "로그인 정보 저장")
     }
     
+}
+
+extension Notification.Name {
+    static let kickboardReturned = Notification.Name("kickboardReturned")
 }
