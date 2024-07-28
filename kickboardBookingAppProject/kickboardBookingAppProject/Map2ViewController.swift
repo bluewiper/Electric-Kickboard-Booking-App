@@ -42,6 +42,9 @@ class Map2ViewController: UIViewController {
 
         mapController = KMController(viewContainer: mapContainer!)
         mapController?.delegate = self
+//        
+//        let currentLocation = CLLocationCoordinate2D(latitude: 37.402001, longitude: 127.108678)
+//        addCurrentLocationMarker(at: currentLocation)
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         mapContainer?.addGestureRecognizer(longPressGesture)
@@ -196,6 +199,24 @@ class Map2ViewController: UIViewController {
         present(modalVC, animated: true, completion: nil)
     }
     
+//    func addCurrentLocationMarker(at location: CLLocationCoordinate2D) {
+//        guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
+//            return
+//        }
+//        let mapPoint = MapPoint(longitude: location.longitude, latitude: location.latitude)
+//        let labelManager = mapView.getLabelManager()
+//        guard let layer = labelManager.getLabelLayer(layerID: "PoiLayer") else {
+//            return
+//        }
+//        let poiOption = PoiOptions(styleID: "currentLocation")
+//        poiOption.rank = 0
+//        poiOption.clickable = true
+//        let poi = layer.addPoi(option: poiOption, at: mapPoint, callback: { _ in
+//            print("Current location POI clicked")
+//        })
+//        poi?.show()
+//    }
+    
     func createPoiStyle(viewName: String) {
         guard let mapView = mapController?.getView(viewName) as? KakaoMap else {
             return
@@ -203,6 +224,14 @@ class Map2ViewController: UIViewController {
         
         let labelManager = mapView.getLabelManager()
         let image = #imageLiteral(resourceName: "marker")
+        let currentLocationimage = UIImage(systemName: "figure.wave")
+//        guard let currentLocationIcon = currentLocationImage?.withTintColor(.systemBlue, renderingMode: .alwyasOriginal) else {
+//            return
+//        }
+//        let currentLocationPoiIconStyle = PoiIconStyle(symbol: currentLocationIcon, AnchorPoint: CGPoint(x: 0.5, y: 1.0))
+//        let currentLocationPerLeavelStyle = PerLevelPoiStyle(iconStyle: currentLocationIcon, level: 0)
+//        let currentLocationPoiStyle = PoiStyle(styleID: "currentLocation", styles: [currentLocationPerLevelStyle])
+//        labelManager.addPoiStyle(currentLocationPoiStyle)
         let icon = PoiIconStyle(symbol: image, anchorPoint: CGPoint(x: 0.5, y: 1.0))
         let perLevelStyle = PerLevelPoiStyle(iconStyle: icon, level: 0)
         let poiStyle = PoiStyle(styleID: "PerLevelStyle", styles: [perLevelStyle])
@@ -217,18 +246,19 @@ class Map2ViewController: UIViewController {
     }
     
     func createPoi(viewName: String) {
-        let view = mapController?.getView(viewName) as! KakaoMap
-        let manager = view.getLabelManager()
-        let layer = manager.getLabelLayer(layerID: "PoiLayer")
-        let poiOption = PoiOptions(styleID: "PerLevelStyle")
-        poiOption.rank = 0
-        poiOption.clickable = true
-        let poi1 = layer?.addPoi(option: poiOption, at: MapPoint(longitude: 127.108678, latitude: 37.402001), callback: {(_ poi: (Poi?)) -> Void in
-            print("POI클릭")
-        }
-        )
-        
-        poi1?.show()
+        // 여기서 초기 생성 마크를 다룸. 초기 생성 마크가 없도록 주석처리.
+//        let view = mapController?.getView(viewName) as! KakaoMap
+//        let manager = view.getLabelManager()
+//        let layer = manager.getLabelLayer(layerID: "PoiLayer")
+//        let poiOption = PoiOptions(styleID: "PerLevelStyle")
+//        poiOption.rank = 0
+//        poiOption.clickable = true
+//        let poi1 = layer?.addPoi(option: poiOption, at: MapPoint(longitude: 127.108678, latitude: 37.402001), callback: {(_ poi: (Poi?)) -> Void in
+//            print("POI클릭")
+//        }
+//        )
+//        
+//        poi1?.show()
     }
 }
 
@@ -262,7 +292,7 @@ extension Map2ViewController: KickboardRegisterDelegate {
 extension Map2ViewController: MapControllerDelegate {
     
     func addViews() {
-        let defaultPosition = MapPoint(longitude: 127.108678, latitude: 37.402001)
+        let defaultPosition = MapPoint(longitude: 127.028406, latitude: 37.194402)
         let mapviewInfo = MapviewInfo(viewName: Map2ViewController.defaultViewName, viewInfoName: "map", defaultPosition: defaultPosition, defaultLevel: 7)
         mapController?.addView(mapviewInfo)
     }
