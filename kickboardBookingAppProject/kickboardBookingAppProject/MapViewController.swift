@@ -68,7 +68,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         label.text = "이용상태: X"
         label.textAlignment = .center
         label.clipsToBounds = true
-        label.layer.cornerRadius = 20 
+        label.layer.cornerRadius = 20
         return label
     }()
     
@@ -100,7 +100,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     
     let longX = 127.0678
     let latitudeY = 37.2040
-
+    
     // a.수정코드
     func addViews() {
         // KakaoMap을 추가하기 위한 viewInfo를 생성합니다.
@@ -140,8 +140,8 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     }
     
     deinit {
-//        mapController?.pauseEngine()
-//        mapController?.resetEngine()
+        //        mapController?.pauseEngine()
+        //        mapController?.resetEngine()
     }
     
     // MARK: - viewDidLoad
@@ -170,20 +170,16 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleMapTap(_:)))
         mapView.addGestureRecognizer(tapGesture)
     }
+    
     // a. 변경사항
     override func viewWillAppear(_ animated: Bool) {
-          super.viewWillAppear(animated)
-          if !hasGeneratedRandomPois {
-              addObservers()
-              _appear = true
-          }
-      }
-    // 이전 코드
-//    override func viewWillAppear(_ animated: Bool) {
-//        addObservers()
-//        _appear = true
-//    }
-//
+        super.viewWillAppear(animated)
+        if !hasGeneratedRandomPois {
+            addObservers()
+            _appear = true
+        }
+    }
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -191,7 +187,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             addViews()
         }
         mapController?.activateEngine()
-
+        
         // 지도 초기화 완료 후 위치 정보 가져오기
         if !_locationUpdatedInitially {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -204,33 +200,33 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         mapController?.pauseEngine()
-
+        
         _appear = false
-//        mapController?.pauseEngine()  //렌더링 중지.
-
+        //        mapController?.pauseEngine()  //렌더링 중지.
+        
     }
     // 이전코드
-//    override func viewWillDisappear(_ animated: Bool) {
-//        _appear = false
-//        mapController?.pauseEngine()  //렌더링 중지.
-//    }
+    //    override func viewWillDisappear(_ animated: Bool) {
+    //        _appear = false
+    //        mapController?.pauseEngine()  //렌더링 중지.
+    //    }
     
     // a. 변경사항
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         removeObservers()
-
-//        mapController?.resetEngine()
+        
+        //        mapController?.resetEngine()
         //엔진 정지. 추가되었던 ViewBase들이 삭제된다.
         
     }
     // 이전코드.
-//    override func viewDidDisappear(_ animated: Bool) {
-//        removeObservers()
-//        mapController?.resetEngine()
-//        //엔진 정지. 추가되었던 ViewBase들이 삭제된다.
-//        
-//    }
+    //    override func viewDidDisappear(_ animated: Bool) {
+    //        removeObservers()
+    //        mapController?.resetEngine()
+    //        //엔진 정지. 추가되었던 ViewBase들이 삭제된다.
+    //
+    //    }
     
     // 인증 실패시 호출.
     func authenticationFailed(_ errorCode: Int, desc: String) {
@@ -320,7 +316,28 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
     }
     
     
+    // MARK: - 기존 addViewSucceeded
     //addView 성공 이벤트 delegate. 추가적으로 수행할 작업을 진행한다.
+    //    func addViewSucceeded(_ viewName: String, viewInfoName: String) {
+    //        print("OK")
+    //        createPoiStyle()
+    //        createLabelLayer()
+    //
+    //        // 지도 초기화 완료 후 위치 정보 가져오기
+    //        updateLocationToCurrentPosition()
+    //
+    //        // 랜덤 POI 생성 (최초 한 번만 생성)
+    //        if !hasGeneratedRandomPois {
+    //            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+    //                if let currentLocation = self.locationManager.location {
+    //                    print("Generating random POI near location after view initialized") // 로그 추가
+    //                    self.createRandomPoiNearLocation(coordinate: currentLocation.coordinate)
+    //                    self.hasGeneratedRandomPois = true
+    //                }
+    //            }
+    //        }
+    //    }
+    
     func addViewSucceeded(_ viewName: String, viewInfoName: String) {
         print("OK")
         createPoiStyle()
@@ -329,17 +346,10 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         // 지도 초기화 완료 후 위치 정보 가져오기
         updateLocationToCurrentPosition()
         
-        // 랜덤 POI 생성 (최초 한 번만 생성)
-        if !hasGeneratedRandomPois {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                if let currentLocation = self.locationManager.location {
-                    print("Generating random POI near location after view initialized") // 로그 추가
-                    self.createRandomPoiNearLocation(coordinate: currentLocation.coordinate)
-                    self.hasGeneratedRandomPois = true
-                }
-            }
-        }
+        // 킥보드 데이터 불러와서 핀 생성
+        addKickboardPins()
     }
+    
     
     
     //addView 실패 이벤트 delegate. 실패에 대한 오류 처리를 진행한다.
@@ -564,14 +574,14 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
                 }
                 return
             }
-
+            
             guard let currentLocation = self.locationManager.location else {
                 DispatchQueue.main.async {
                     self.showToast(self.view, message: "현재 위치를 가져올 수 없습니다.")
                 }
                 return
             }
-
+            
             DispatchQueue.main.async {
                 self.locationManager(self.locationManager, didUpdateLocations: [currentLocation])
             }
@@ -672,40 +682,15 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
         }
     }
     
-    // 랜덤 위치에 포이 생성
-    func createRandomPoiNearLocation(coordinate: CLLocationCoordinate2D) {
-        guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
-            print("Map view is nil")
-            return
+    func addKickboardPins() {
+        let kickboards = CoreDataHelper.shared.fetchAllKickboards()
+        for kickboard in kickboards {
+            let position = MapPoint(longitude: kickboard.longitude, latitude: kickboard.latitude)
+            createKickboardPoi(at: position, id: kickboard.id ?? "", battery: kickboard.battery ?? "", fee: kickboard.fee ?? "")
         }
-        guard !hasGeneratedRandomPois else { return } // 이미 생성된 경우 리턴
-
-        for _ in 1...5 {
-            let randomDistance = Double.random(in: 10...500) // 10에서 500미터 사이의 랜덤 거리
-            let randomAngle = Double.random(in: 0...(2 * .pi)) // 0에서 2파이 사이의 랜덤 각도
-            
-            let deltaLat = (randomDistance / 111000) * cos(randomAngle)
-            let deltaLon = (randomDistance / (111000 * cos(coordinate.latitude * .pi / 180))) * sin(randomAngle)
-            
-            let randomLat = coordinate.latitude + deltaLat
-            let randomLon = coordinate.longitude + deltaLon
-            
-            let position = MapPoint(longitude: randomLon, latitude: randomLat)
-            print("Random location: \(randomLat), \(randomLon)") // 랜덤 위치 콘솔 출력
-            print("Calling createRandomPoi") // 로그 추가
-            createRandomPoi(at: position)
-        }
-
-        hasGeneratedRandomPois = true // 생성 완료 플래그 설정
     }
 
-    private var kickboardCount = 0
-    
-    private var poiNames: [Poi: String] = [:]
-    
-    private var rentedKickboard: Poi?
-
-    func createRandomPoi(at position: MapPoint) {
+    func createKickboardPoi(at position: MapPoint, id: String, battery: String, fee: String) {
         guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
             print("Map view is nil")
             return
@@ -715,50 +700,108 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             print("POI layer is nil")
             return
         }
-
-        let uniquePoiID = UUID().uuidString
-        let options = PoiOptions(styleID: "randomPoi", poiID: uniquePoiID)
+        
+        let options = PoiOptions(styleID: "randomPoi", poiID: id)
         if let poi = layer.addPoi(option: options, at: position) {
             let coordinate = position.wgsCoord
-            kickboardCount += 1 // 순서 증가
             poiStyles[poi] = "randomPoi"
-            let kickboardName = "\(kickboardCount)번 킥보드"
-            poiNames[poi] = kickboardName // 이름 저장
-            poiIDs[poi] = uniquePoiID // ID 저장
-            print("\(kickboardName) POI added at \(coordinate.latitude), \(coordinate.longitude)") // 로그 출력
+            poiNames[poi] = "\(id) - 배터리: \(battery), 요금: \(fee)"
+            poiIDs[poi] = id
+            print("\(id) POI added at \(coordinate.latitude), \(coordinate.longitude)") // 로그 출력
             poi.show()
-            
-            // 랜덤 ID 생성
-            let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            let randomLetters = String((0..<2).map { _ in letters.randomElement()! })
-            let randomNumbers = (0..<4).map { _ in String(Int.random(in: 0...9)) }.joined()
-            let randomID = randomLetters + randomNumbers
-
-            // 랜덤 배터리 생성
-            let randomBattery = "\(Int.random(in: 1...100))%"
-
-            // 랜덤 요금 생성
-            let fees = ["50원", "100원", "150원", "200원"]
-            let randomFee = fees.randomElement()!
-
-            // Core Data에 저장
-            CoreDataHelper.shared.saveKickboard(
-                id: randomID,
-                latitude: coordinate.latitude,
-                longitude: coordinate.longitude,
-                battery: randomBattery, // 예시로 100% 배터리를 사용
-                fee: randomFee     // 예시로 100원을 사용
-            )
-            
-            // 저장된 킥보드 데이터를 가져와 출력
-            let kickboards = CoreDataHelper.shared.fetchAllKickboards()
-            for kickboard in kickboards {
-                print("킥보드 등록 완료 - 위도 \(kickboard.latitude), 경도 \(kickboard.longitude), 코드 \(kickboard.id ?? ""), 배터리 \(kickboard.battery ?? ""), 요금 \(kickboard.fee ?? "")")
-            }
         } else {
-            print("Failed to add random POI")
+            print("Failed to add kickboard POI")
         }
     }
+    
+    // MARK: - 랜덤생성 비활성화
+    // 랜덤 위치에 포이 생성
+//    func createRandomPoiNearLocation(coordinate: CLLocationCoordinate2D) {
+//        guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
+//            print("Map view is nil")
+//            return
+//        }
+//        guard !hasGeneratedRandomPois else { return } // 이미 생성된 경우 리턴
+//        
+//        for _ in 1...5 {
+//            let randomDistance = Double.random(in: 10...500) // 10에서 500미터 사이의 랜덤 거리
+//            let randomAngle = Double.random(in: 0...(2 * .pi)) // 0에서 2파이 사이의 랜덤 각도
+//            
+//            let deltaLat = (randomDistance / 111000) * cos(randomAngle)
+//            let deltaLon = (randomDistance / (111000 * cos(coordinate.latitude * .pi / 180))) * sin(randomAngle)
+//            
+//            let randomLat = coordinate.latitude + deltaLat
+//            let randomLon = coordinate.longitude + deltaLon
+//            
+//            let position = MapPoint(longitude: randomLon, latitude: randomLat)
+//            print("Random location: \(randomLat), \(randomLon)") // 랜덤 위치 콘솔 출력
+//            print("Calling createRandomPoi") // 로그 추가
+//            createRandomPoi(at: position)
+//        }
+//        
+//        hasGeneratedRandomPois = true // 생성 완료 플래그 설정
+//    }
+    
+    private var kickboardCount = 0
+    
+    private var poiNames: [Poi: String] = [:]
+    
+    private var rentedKickboard: Poi?
+    
+//    func createRandomPoi(at position: MapPoint) {
+//        guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
+//            print("Map view is nil")
+//            return
+//        }
+//        let labelManager = mapView.getLabelManager()
+//        guard let layer = labelManager.getLabelLayer(layerID: "poiLayer") else {
+//            print("POI layer is nil")
+//            return
+//        }
+//        
+//        let uniquePoiID = UUID().uuidString
+//        let options = PoiOptions(styleID: "randomPoi", poiID: uniquePoiID)
+//        if let poi = layer.addPoi(option: options, at: position) {
+//            let coordinate = position.wgsCoord
+//            kickboardCount += 1 // 순서 증가
+//            poiStyles[poi] = "randomPoi"
+//            let kickboardName = "\(kickboardCount)번 킥보드"
+//            poiNames[poi] = kickboardName // 이름 저장
+//            poiIDs[poi] = uniquePoiID // ID 저장
+//            print("\(kickboardName) POI added at \(coordinate.latitude), \(coordinate.longitude)") // 로그 출력
+//            poi.show()
+//            
+//            // 랜덤 ID 생성
+//            let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+//            let randomLetters = String((0..<2).map { _ in letters.randomElement()! })
+//            let randomNumbers = (0..<4).map { _ in String(Int.random(in: 0...9)) }.joined()
+//            let randomID = randomLetters + randomNumbers
+//            
+//            // 랜덤 배터리 생성
+//            let randomBattery = "\(Int.random(in: 1...100))%"
+//            
+//            // 랜덤 요금 생성
+//            let fees = ["50원", "100원", "150원", "200원"]
+//            let randomFee = fees.randomElement()!
+//            
+//            // Core Data에 저장
+//            CoreDataHelper.shared.saveKickboard(
+//                id: randomID,
+//                latitude: coordinate.latitude,
+//                longitude: coordinate.longitude,
+//                battery: randomBattery, // 예시로 100% 배터리를 사용
+//                fee: randomFee     // 예시로 100원을 사용
+//            )
+//            
+//            // 저장된 킥보드 데이터를 가져와 출력
+//            let kickboards = CoreDataHelper.shared.fetchAllKickboards()
+//            for kickboard in kickboards {
+//                print("킥보드 등록 완료 - 위도 \(kickboard.latitude), 경도 \(kickboard.longitude), 코드 \(kickboard.id ?? ""), 배터리 \(kickboard.battery ?? ""), 요금 \(kickboard.fee ?? "")")
+//            }
+//        } else {
+//            print("Failed to add random POI")
+//        }
+//    }
     
     func removeSearchResultPois() {
         guard let mapView = mapController?.getView("mapview") as? KakaoMap else {
@@ -834,7 +877,7 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             }
         }
     }
-
+    
     
     @objc private func handleMapTap(_ sender: UITapGestureRecognizer) {
         let point = sender.location(in: mapView)
@@ -844,18 +887,18 @@ class MapViewController: UIViewController, MapControllerDelegate, CLLocationMana
             }
         }
     }
-
+    
     private func poiTouched(_ poi: Poi) {
         if !isKickboardInUse {
             showPOIAlert(for: poi)
         }
     }
-
+    
     private func getPosition(_ point: CGPoint) -> MapPoint? {
         let mapView: KakaoMap? = mapController?.getView("mapview") as? KakaoMap
         return mapView?.getPosition(point)
     }
-
+    
     private func touchedPOI(_ coord: GeoCoordinate, _ dist: Double) -> Poi? {
         if let map = mapController?.getView("mapview") as? KakaoMap {
             let manager = map.getLabelManager()
